@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 tableRowArrayList.clear();
                 checkBoxArrayList.clear();
                 textViewArrayList.clear();
+                Toast.makeText(MainActivity.this,"Resetting",Toast.LENGTH_SHORT ).show();
             }
         });
 
