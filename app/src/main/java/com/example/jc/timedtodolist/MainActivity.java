@@ -2,6 +2,7 @@ package com.example.jc.timedtodolist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     Button addTask, confirm, reset;
+    Boolean activeList = false;
     TextView textViewTime;
     ScrollView scrollView;
     LinearLayout linearLayout;
@@ -52,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //SharedPreferences sharedPreferences = this.getSharedPreferences("preferences", Context.MODE_PRIVATE);
+
+
         addTask = findViewById(R.id.btnTaskAdd);
         confirm = findViewById(R.id.btnTaskConfirm);
         textViewTime = findViewById(R.id.textTime);
@@ -59,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.linearLayout);
         tableLayout = findViewById(R.id.tableLayout);
         reset = findViewById(R.id.btnTaskReset);
+
+        /*activeList = savedInstanceState.getBoolean("activeList");
+        if(activeList){
+            loadState();
+        }*/
 
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,42 +82,19 @@ public class MainActivity extends AppCompatActivity {
         textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.set_time_dialog, null);
-                final NumberPicker hour = dialogView.findViewById(R.id.numPickerHour);
-                final NumberPicker min = dialogView.findViewById(R.id.numPickerMin);
-                final NumberPicker sec = dialogView.findViewById(R.id.numPickerSec);
-                hour.setMaxValue(23);
-                hour.setMinValue(0);
-                min.setMaxValue(59);
-                hour.setMinValue(0);
-                sec.setMaxValue(59);
-                dialog.setView(dialogView);
-                dialog.setTitle("Set Time");
-                dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        DecimalFormat decimalFormat = new DecimalFormat("00");
-                        String time = decimalFormat.format(hour.getValue())+":"+
-                                decimalFormat.format(min.getValue())+":"+decimalFormat.format(sec.getValue());
-
-                        textViewTime.setText(time);
-                    }
-                });
-                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                dialog.show();
+                setTextViewTime();
             }
         });
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(reset.getText().toString().equals("Finished?")){
+
+                    Toast.makeText(MainActivity.this,"To do list Finished!\n Starting new list!",Toast.LENGTH_LONG);
+                    reset.setText("Reset");
+                }
+
                 textViewTime.setText("00:00:00");
                 textViewTime.setEnabled(true);
                 confirm.setEnabled(true);
@@ -131,10 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 confirmTaskList();
 
                 if(editTextArrayList.size()>0 && !textViewTime.getText().toString().equals("00:00:00")) {
-                    textViewTime.setEnabled(false);
+                  //  textViewTime.setEnabled(false);
+                    textViewTime.setClickable(false);
+                //    textViewTime.setTextColor(Color.parseColor("#000000"));
+                    reset.setText("Finished?");
                     addTask.setEnabled(false);
                     confirm.setEnabled(false);
-
+                    activeList = true;
                     countDown(convertTimeToMilli(textViewTime.getText().toString()));
                  //   Log.d(TAG, "onClick: if:  "+ editTextArrayList.size());
                 }
@@ -206,6 +197,40 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public void setTextViewTime(){
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.set_time_dialog, null);
+        final NumberPicker hour = dialogView.findViewById(R.id.numPickerHour);
+        final NumberPicker min = dialogView.findViewById(R.id.numPickerMin);
+        final NumberPicker sec = dialogView.findViewById(R.id.numPickerSec);
+        hour.setMaxValue(23);
+        hour.setMinValue(0);
+        min.setMaxValue(59);
+        hour.setMinValue(0);
+        sec.setMaxValue(59);
+        dialog.setView(dialogView);
+        dialog.setTitle("Set Time");
+        dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DecimalFormat decimalFormat = new DecimalFormat("00");
+                String time = decimalFormat.format(hour.getValue())+":"+
+                        decimalFormat.format(min.getValue())+":"+decimalFormat.format(sec.getValue());
+
+                textViewTime.setText(time);
+            }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        dialog.show();
     }
 
     public void createNewTask(String text, Boolean check){
