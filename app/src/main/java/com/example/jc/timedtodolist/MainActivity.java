@@ -3,9 +3,11 @@ package com.example.jc.timedtodolist;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewTask();
+                createNewTask("",null);
             }
         });
 
@@ -109,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
                 textViewTime.setEnabled(true);
                 confirm.setEnabled(true);
                 addTask.setEnabled(true);
-                countDownTimer.cancel();
+                if(countDownTimer!=null)
+                    countDownTimer.cancel();
                 tableLayout.removeAllViews();
                 totalTask = 1; idCounter = 0;
 
@@ -170,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
 
     public long convertTimeToMilli(String time){
         long l=0;
-        String[] arr = time.split(":");
+        String[] arr;
+        if(time.contains(" "))
+            arr = time.split(" : ");
+        else
+            arr = time.split(":");
         l += Integer.parseInt(arr[0]) * 60 * 60 * 1000;
         l += Integer.parseInt(arr[1]) * 60 * 1000;
         l += Integer.parseInt(arr[2]) * 1000;
@@ -201,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void createNewTask(){
+    public void createNewTask(String text, Boolean check){
 
 
         TableRow tableRow = new TableRow(MainActivity.this);
@@ -249,7 +256,15 @@ public class MainActivity extends AppCompatActivity {
         editText.setTextSize(18);
 
 
-        checkBox.setEnabled(false);
+        editText.setText(text);
+
+        if(check!=null) {
+            checkBox.setEnabled(true);
+            checkBox.setChecked(check);
+            editText.setKeyListener(null);
+        }
+        else
+            checkBox.setEnabled(false);
 
         textViewArrayList.add(textView1);
         checkBoxArrayList.add(checkBox);
@@ -262,5 +277,61 @@ public class MainActivity extends AppCompatActivity {
         tableLayout.addView(tableRow);
 
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadState();
+    }
+
+    public void saveState(){
+        SharedPreferences sharedPreferences = getSharedPreferences("pref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt("size", editTextArrayList.size());
+        if(textViewTime.getText().toString().equals("Times Up!"))
+            editor.putString("time","00:00:00");
+        else
+            editor.putString("time", textViewTime.getText().toString());
+        editor.putBoolean("started",countDownTimer!=null);
+        for(int i = 0; i < editTextArrayList.size(); i++){
+            editor.putString("editText "+ i, editTextArrayList.get(i).getText().toString());
+            editor.putBoolean("checkBox " + i, checkBoxArrayList.get(i).isChecked());
+        }
+        editor.putLong("systemTime", SystemClock.elapsedRealtime());
+        editor.apply();
+
+    }
+    public void loadState() {
+        SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        //SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (tableRowArrayList.size() <= 0) {
+            int size = sharedPreferences.getInt("size", 0);
+            long diff = SystemClock.elapsedRealtime() - sharedPreferences.getLong("systemTime",0);
+            for (int i = 0; i < size; i++) {
+                createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false));
+            }
+          //  confirmTaskList();
+
+
+            textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
+
+            if (sharedPreferences.getBoolean("started", false)) {
+                addTask.setEnabled(false);
+                confirm.setEnabled(false);
+                textViewTime.setEnabled(false);
+                countDown( (convertTimeToMilli(sharedPreferences.getString("time", "00:00:00")) - diff) );
+
+            }
+
+        }
     }
 }
