@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/remoteLinearLayout">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout"
+        android:layout_width="fill_parent"
+        android:layout_height="72dp"
+        android:padding="10dp" >
+        <ImageView
+            android:src="@mipmap/ic_launcher_round"
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="10dp" />
+        <TextView
+            android:textSize="18dp"
+            android:textColor="#000"
+            android:text="Testing"
+
+            android:id="@+id/remoteText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/image"
+            />
+        <Chronometer
+            android:textSize="24dp"
+            android:textColor="#000"
+            android:id="@+id/remoteChrono"
+            android:countDown="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/image"
+            android:layout_below="@id/remoteText"
+            />
+
+        <Button
+            android:id="@+id/remoteButton"
+            android:layout_width="32dp"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:focusable="true"
+            android:clickable="true"
+            android:text="x"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </RelativeLayout>
+</LinearLayout>
