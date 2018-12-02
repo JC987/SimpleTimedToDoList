@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: addTask Pressed");
-                createNewTask("",null);
+                createNewTask("",null,false);
             }
         });
 
@@ -153,20 +155,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("aa", "onClick: from MAIN create service");
                         startService(service);
 
-
-                        ServiceConnection serviceConnection = new ServiceConnection() {
-                            @Override
-                            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-
-                            }
-
-                            @Override
-                            public void onServiceDisconnected(ComponentName componentName) {
-
-                            }
-                        };
-
-                        //bindService(service, serviceConnection, 0);
                    }
 
                 }
@@ -180,8 +168,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-    }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuSetting:
+                Intent i = new Intent(this,SettingsActivity.class);
+                this.startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+         getMenuInflater().inflate(R.menu.menu_main,menu);
+         return true;//return super.onCreateOptionsMenu(menu);
+    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -288,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void createNewTask(String text, Boolean check){
+    public void createNewTask(String text, Boolean check, Boolean started){
 
 
         TableRow tableRow = new TableRow(MainActivity.this);
@@ -327,10 +332,11 @@ public class MainActivity extends AppCompatActivity {
 
         tableRow.setPadding(4,8,4,32);
 
-        if(check!=null) {
+        if(check!=null && started) {
             checkBox.setEnabled(true);
             checkBox.setChecked(check);
-            editText.setKeyListener(null);
+
+                editText.setKeyListener(null);
         }
         else
             checkBox.setEnabled(false);
@@ -397,18 +403,29 @@ public class MainActivity extends AppCompatActivity {
             int size = sharedPreferences.getInt("size", 0);
             long diff = SystemClock.elapsedRealtime() - sharedPreferences.getLong("systemTime",0);
             for (int i = 0; i < size; i++) {
-                createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false));
+                Log.d(TAG, "loadState: loaded new task");
+                createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false),sharedPreferences.getBoolean("started", false));
             }
           //  confirmTaskList();
 
 
             textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
             if (sharedPreferences.getBoolean("started", false)) {
+                Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
+
                 addTask.setEnabled(false);
                 confirm.setEnabled(false);
                 textViewTime.setClickable(false);
                 countDown( (convertTimeToMilli(sharedPreferences.getString("time", "00:00:00")) - diff) );
 
+            }
+            else{
+                Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
+                addTask.setEnabled(true);
+                confirm.setEnabled(true);
+                textViewTime.setClickable(true);
+                textViewTime.setText(sharedPreferences.getString("time","00:00:00"));
+                
             }
 
 

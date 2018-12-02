@@ -9,23 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".BackgroundService" android:exported="false"
-            android:stopWithTask="false"
+        <service
+            android:name=".BackgroundService"
             android:enabled="true"
-            />
+            android:exported="false"
+            android:stopWithTask="false" />
+
         <receiver
             android:name=".SensorRestarterBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
             android:label="RestartServiceWhenStopped">
             <intent-filter>
-                <action android:name=".RestartSensor"/>
+                <action android:name=".RestartSensor" />
             </intent-filter>
         </receiver>
-
-
-
-
 
         <activity
             android:name=".MainActivity"
@@ -36,7 +34,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="MainActivity$switchButtonListener" />
+
+        <receiver android:name=".MainActivity$switchButtonListener" />
+
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>
