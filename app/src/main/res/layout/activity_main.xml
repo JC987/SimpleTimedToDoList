@@ -11,15 +11,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
     tools:context="com.example.jc.timedtodolist.MainActivity">
 
     <TextView
         android:id="@+id/textTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00:00"
-        android:textSize="48dp"
+        android:text="@string/default_txt_time"
+        android:textSize="48sp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,7 +45,7 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TableLayout
@@ -53,50 +54,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <!--
-                <TableRow
-                    android:id="@+id/testrow0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:visibility="visible"
-                    android:weightSum="5"
 
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="0)"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-
-                        />
-
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="4"
-                        android:gravity="center_horizontal"
-                        android:hint="Leave blank if no task needed"
-                        android:paddingBottom="16dp"
-                        android:paddingTop="16dp"
-
-                        android:textColor="#000000"/>
-
-                    <CheckBox
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="0.5"
-
-                        android:gravity="center_vertical"
-                        android:paddingBottom="16dp"
-                        android:paddingTop="16dp" />
-                </TableRow>
-            -->
 
             </TableLayout>
         </LinearLayout>
@@ -110,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="452dp"
         android:background="#FFFFFF"
-        android:text=" + "
+        android:text="@string/btn_txt_add"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -123,7 +81,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="confirm!"
+        android:text="@string/btn_txt_confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -137,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Reset!"
+        android:text="@string/btn_txt_reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnTaskAdd"
         app:layout_constraintLeft_toLeftOf="parent"

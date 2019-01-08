@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TimedToDoList.iml" filepath="$PROJECT_DIR$/TimedToDoList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimpleTimedToDoList.iml" filepath="$PROJECT_DIR$/SimpleTimedToDoList.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

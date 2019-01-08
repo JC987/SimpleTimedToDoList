@@ -9,21 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".BackgroundService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="false" />
 
         <receiver
-            android:name=".SensorRestarterBroadcastReceiver"
+            android:name=".MyReceiver"
             android:enabled="true"
-            android:exported="true"
-            android:label="RestartServiceWhenStopped">
-            <intent-filter>
-                <action android:name=".RestartSensor" />
-            </intent-filter>
+            android:exported="false" >
         </receiver>
+        <service android:name=".MyService" android:enabled="true"  >
+        </service>
+
 
         <activity
             android:name=".MainActivity"

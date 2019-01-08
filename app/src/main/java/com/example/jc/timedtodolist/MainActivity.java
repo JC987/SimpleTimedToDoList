@@ -1,6 +1,7 @@
 package com.example.jc.timedtodolist;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -54,14 +56,16 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EditText> editTextArrayList = new ArrayList<>();
     ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
     ArrayList<TableRow> tableRowArrayList = new ArrayList<>();
-    int totalTask = 1, idCounter = 0;
+    private int mTotalTask = 1, mIdCounter = 0;
 
     final static  String TAG = "mainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        chronometer=findViewById(R.id.chronometer);
+
+        //instantiate vars
+        chronometer = findViewById(R.id.chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime());
         addTask = findViewById(R.id.btnTaskAdd);
         confirm = findViewById(R.id.btnTaskConfirm);
@@ -71,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         tableLayout = findViewById(R.id.tableLayout);
         reset = findViewById(R.id.btnTaskReset);
 
+        //Calls createNewTask(...)
+
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //chronometer.setCountDown(true);
+
+        //Calls setTextViewTime()
+
         textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,79 +96,63 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
+         * Stops services, Clears notifications, and calls mResetList.
+         */
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService(new Intent(MainActivity.this, BackgroundService.class));
+
+                //Stop service
+                stopService(new Intent(MainActivity.this,MyService.class));
+
+                // TODO: BackgroundSerivce is not functioning properly the following
+                // TODO: lines will be removed
+               // stopService(new Intent(MainActivity.this, BackgroundService.class));
                 SharedPreferences prefs= getSharedPreferences("Service", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.clear();editor.apply();
+
+                //clear all notifications
                 NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                manager.cancelAll();
-                Log.d(TAG, "onClick: reset Pressed");
-                if(reset.getText().toString().equals("Finished?")){
+                if(manager!=null)
+                    manager.cancelAll();
 
-
-                    Toast.makeText(MainActivity.this,"To do list Finished!\n Starting new list!",Toast.LENGTH_LONG).show();
-                    reset.setText("Reset");
-                }
-
-                textViewTime.setText("00:00:00");
-                textViewTime.setClickable(true);
-                confirm.setEnabled(true);
-                addTask.setEnabled(true);
-                if(countDownTimer!=null)
-                    countDownTimer.cancel();
-                tableLayout.removeAllViews();
-                totalTask = 1; idCounter = 0;
-
-                editTextArrayList.clear();
-                tableRowArrayList.clear();
-                checkBoxArrayList.clear();
-                textViewArrayList.clear();
-                //saveState();
+                //call reset func
+                mResetList();
                 Toast.makeText(MainActivity.this,"Resetting",Toast.LENGTH_SHORT ).show();
             }
         });
 
+        //lock the list, start the timer, create notification
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
-                Log.d(TAG, "onClick: confirm Pressed");
                 confirmTaskList();
 
+                //Check to see if there is a least 1 task and
+                // at least 1 second to complete it.
                 if(editTextArrayList.size()>0 && !textViewTime.getText().toString().equals("00:00:00")) {
 
+                    //Makes sure the list can no longer be edited
                     textViewTime.setClickable(false);
-
-                    reset.setText("Finished?");
+                    //TODO: create string resource
+                    reset.setText(R.string.Finished);
                     addTask.setEnabled(false);
                     confirm.setEnabled(false);
                     activeList = true;
 
                     long tmp = convertTimeToMilli(textViewTime.getText().toString());
                     countDown(tmp);
-                    buildTimerNotification(convertTimeToMilli(textViewTime.getText().toString()));
-
-                    if (!isMyServiceRunning(BackgroundService.class)) {
-                        Intent service = new Intent(MainActivity.this, BackgroundService.class);
-                        service.putExtra("value", textViewTime.getText().toString());
-                        service.putExtra("val",tmp);
-                        SharedPreferences prefs = getSharedPreferences("Service", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putLong("counter",tmp);
-                        editor.apply();
-                        Log.d("aa", "onClick: from MAIN create service");
-                        startService(service);
-
-                   }
+                    mCreateService(tmp);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                        buildTimerNotification(tmp);
 
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Add task to List and set time", Toast.LENGTH_SHORT).show();
-                    totalTask = 1;
+                    mTotalTask = 1;
                 }
 
 
@@ -168,8 +160,65 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
+
+    /**
+     * Creates an alarm manager that calls a broadcast receiver MyReceiver.
+     * Which calls a service to create a finish notification.
+     * @param tmp length of time in milli till finish notification should be sent
+     */
+    private void mCreateService(long tmp){
+
+        Intent notifyIntent = new Intent(MainActivity.this,
+                MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+                (MainActivity.this, PendingIntent.FLAG_ONE_SHOT,
+                        notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if(alarmManager!=null) {
+            //setExact requires api 19 or up.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Log.i(TAG, "onClick: api version greater than or equal to 19");
+                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME,
+                        SystemClock.elapsedRealtime() + tmp, pendingIntent);
+            } else {
+                Log.i(TAG, "onClick: api version below 19");
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+                        SystemClock.elapsedRealtime() + tmp, pendingIntent);
+            }
+        }
+    }
+
+    /**
+     * Reset all views and vars in order to create a new list
+     */
+    private void mResetList(){
+        Log.d(TAG, "onClick: reset Pressed");
+        if(reset.getText().toString().equals("Finished?")){
+
+            Toast.makeText(MainActivity.this,"To do list Finished!\n Starting new list!",Toast.LENGTH_LONG).show();
+            reset.setText(R.string.btn_txt_reset);
+        }
+
+        //Resetting all views
+        textViewTime.setText(R.string.default_txt_time);
+        textViewTime.setClickable(true);
+        confirm.setEnabled(true);
+        addTask.setEnabled(true);
+
+        if(countDownTimer!=null)
+            countDownTimer.cancel();
+        tableLayout.removeAllViews();
+        mTotalTask = 1; mIdCounter = 0;
+
+        editTextArrayList.clear();
+        tableRowArrayList.clear();
+        checkBoxArrayList.clear();
+        textViewArrayList.clear();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -188,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
          return true;//return super.onCreateOptionsMenu(menu);
     }
 
+    //TODO: Not currently in use, will remove.
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -200,28 +250,14 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public void countDown(long l){
 
-        countDownTimer = new CountDownTimer(l, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                long hr = millisUntilFinished / (60 * 60 * 1000);
-                long min = (millisUntilFinished - (hr * 60 * 60 * 1000)) / 60000;
-                long sec = (millisUntilFinished - (hr * 60 * 60 * 1000) - (min * 60000)) / 1000;
-                NumberFormat numberFormat = new DecimalFormat("00");
-
-                textViewTime.setText(numberFormat.format(hr) + ":" + numberFormat.format(min) + ":" + numberFormat.format(sec));
-               // buildTimerNotification(millisUntilFinished);
-            }
-            public void onFinish() {
-                textViewTime.setText("Times Up!");
-                countDownTimer=null;
-               // buildTimerNotification(0);
-            }
-        }.start();
-    }
-
-    public long convertTimeToMilli(String time){
+    /***
+     * Converts string into a long
+     * @param time is a string that represents the time the user had chosen
+     * @return the time as a long
+     * For Example: A string '00:01:05' returns 65,000
+     */
+    private long convertTimeToMilli(String time){
         long l=0;
         String[] arr;
         if(time.contains(" "))
@@ -234,13 +270,44 @@ public class MainActivity extends AppCompatActivity {
         return l;
     }
 
-    public void confirmTaskList(){
+
+    /***
+     * Set a count down timer from the time the user had chosen. Updates textViewTime.
+     * @param l is long representing the time
+     */
+    private void countDown(long l){
+
+        countDownTimer = new CountDownTimer(l, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                long hr = millisUntilFinished / (60 * 60 * 1000);
+                long min = (millisUntilFinished - (hr * 60 * 60 * 1000)) / 60000;
+                long sec = (millisUntilFinished - (hr * 60 * 60 * 1000) - (min * 60000)) / 1000;
+                NumberFormat numberFormat = new DecimalFormat("00");
+
+                String tmp = numberFormat.format(hr) + ":" + numberFormat.format(min) + ":" + numberFormat.format(sec);
+                textViewTime.setText(tmp);
+
+            }
+            public void onFinish() {
+                textViewTime.setText(R.string.Times_Up);
+                countDownTimer=null;
+            }
+        }.start();
+    }
+
+    /***
+     * Remove every table row that has an empty edit text.
+     * For every table row enable checkboxes, disable edit texts, set text view's text
+     */
+    private void confirmTaskList(){
         for(int i = 0; i<editTextArrayList.size(); i++){
             editTextArrayList.get(i).setKeyListener(null);
             editTextArrayList.get(i).setFocusable(false);
             checkBoxArrayList.get(i).setEnabled(true);
 
-            textViewArrayList.get(i).setText(i+1 + " )");
+            String tmp = i+1 + " )";
+            textViewArrayList.get(i).setText(tmp);
 
             if(editTextArrayList.get(i).getText().toString().equals("")) {
                 tableRowArrayList.get(i).setVisibility(View.GONE);
@@ -251,15 +318,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "confirmTaskList: removed table row " + i);
                 i--;
-
             }
-
-
         }
     }
 
-    public void setTextViewTime(){
-
+    /**
+     * This function will create a dialog with three num-pickers represented as
+     * 'HH', 'MM', and'SS'. Then set textViewTime with those values, '01:05:40'
+     */
+    private void setTextViewTime(){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_set_time, null);
@@ -293,9 +360,17 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void createNewTask(String text, Boolean check, Boolean started){
 
-
+    /**
+     * dynamically create a table row that has edit text, checkbox, and text view.
+     * If app had been closed and then reopen values will be reassigned. Otherwise
+     * assign generic values
+     * @param text text value from and EditText
+     * @param check if the CheckBox was checked
+     * @param started no in use
+     */
+    private void createNewTask(String text, Boolean check, Boolean started){
+        //Create views
         TableRow tableRow = new TableRow(MainActivity.this);
         TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT,5.0f);
 
@@ -308,8 +383,7 @@ public class MainActivity extends AppCompatActivity {
         TextView textView1 = new TextView(this);
         TableRow.LayoutParams textViewParams= new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT,0.5f);
 
-        Log.d(TAG, "createNewTask: created table view");
-
+        // set layout parameters
         checkBoxParams.setMarginStart(30);
 
         editText.setLayoutParams(editTextParams);
@@ -317,9 +391,8 @@ public class MainActivity extends AppCompatActivity {
         textView1.setLayoutParams(textViewParams);
         tableRow.setLayoutParams(tableRowParams);
 
-        Log.d(TAG, "createNewTask: setLayoutParams for views");
-
-        String tmp = totalTask + ") ";
+        // set views
+        String tmp = mTotalTask + ") ";
         textView1.setText(tmp);
         textView1.setTextSize(18);
         textView1.setTextColor(Color.parseColor("#000000"));
@@ -342,16 +415,16 @@ public class MainActivity extends AppCompatActivity {
             checkBox.setEnabled(false);
         Log.d(TAG, "createNewTask: set properties for views");
 
-        totalTask++;
+        mTotalTask++;
 
-        textView1.setId(idCounter);
-        editText.setId(idCounter+1);
-        checkBox.setId(idCounter+2);
+        //TODO: Remove mIdCounter, I thought I would need and id for each view but right now I don't
+        textView1.setId(mIdCounter);
+        editText.setId(mIdCounter+1);
+        checkBox.setId(mIdCounter+2);
 
-        idCounter += 3;
+        mIdCounter += 3;
 
-        Log.d(TAG, "createNewTask: incremented task no. and id ct");
-
+        //add views to tableRow
         textViewArrayList.add(textView1);
         checkBoxArrayList.add(checkBox);
         editTextArrayList.add(editText);
@@ -377,7 +450,11 @@ public class MainActivity extends AppCompatActivity {
         loadState();
     }
 
-    public void saveState(){
+    /**
+     * Save all task in the list and timers value using shared preferences.
+     * Called from onPause
+     */
+    private void saveState(){
         SharedPreferences sharedPreferences = getSharedPreferences("pref",MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -386,6 +463,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("time","00:00:00");
         else
             editor.putString("time", textViewTime.getText().toString());
+
         editor.putBoolean("started",countDownTimer!=null);
         for(int i = 0; i < editTextArrayList.size(); i++){
             editor.putString("editText "+ i, editTextArrayList.get(i).getText().toString());
@@ -395,7 +473,11 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
     }
-    public void loadState() {
+
+    /**
+     * Load all tasks and timer value from shared preference
+     */
+    private void loadState() {
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
         //SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -403,10 +485,8 @@ public class MainActivity extends AppCompatActivity {
             int size = sharedPreferences.getInt("size", 0);
             long diff = SystemClock.elapsedRealtime() - sharedPreferences.getLong("systemTime",0);
             for (int i = 0; i < size; i++) {
-                Log.d(TAG, "loadState: loaded new task");
                 createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false),sharedPreferences.getBoolean("started", false));
             }
-          //  confirmTaskList();
 
 
             textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
@@ -432,7 +512,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void buildTimerNotification(long l){
+    /**
+     * create a notification that has a chronometer counting down from the time user chose.
+     * @param l is the timer value
+     */
+    private void buildTimerNotification(long l){
         final RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.dialog_build_time_noti);
         remoteViews.setChronometer(R.id.remoteChrono,l+SystemClock.elapsedRealtime(),null,true);
         remoteViews.setTextViewText(R.id.remoteText,"Time Remaining:");
@@ -463,26 +547,37 @@ public class MainActivity extends AppCompatActivity {
         remoteViews.setOnClickPendingIntent(R.id.remoteButton,
                 pendingSwitchIntent);
 
+        if(manager!=null)
             manager.notify(0, builder.build());
-           Log.d(TAG, "build: build noti");
+        Log.d(TAG, "build: build noti");
         //}
     }
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(MainActivity.this, BackgroundService.class));
+        // ok i think i know what cause the service to be created twice, because
+        // service was stopped when main was destroyed and when service was so perhaps two
+        // services were created through the broadcast receiver.
+
+        //stopService(new Intent(MainActivity.this, BackgroundService.class));
         Log.i("aa", "onDestroy! form MAIN!");
         super.onDestroy();
 
     }
 
+    /**
+     * This class will close the notification once the button is pressed.
+     */
     public static class switchButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             Log.d(TAG, "I am here");
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if(manager!=null)
             manager.cancelAll();
         }
     }
+
 }
