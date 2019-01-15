@@ -58,11 +58,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<TableRow> tableRowArrayList = new ArrayList<>();
     private int mTotalTask = 1, mIdCounter = 0;
 
+
     final static  String TAG = "mainActivity";
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //first use settings
+       // loadSettings();
 
         //instantiate vars
         chronometer = findViewById(R.id.chronometer);
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                activeList=false;
                 //Stop service
                 stopService(new Intent(MainActivity.this,MyService.class));
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
                 confirmTaskList();
 
                 //Check to see if there is a least 1 task and
@@ -139,20 +143,46 @@ public class MainActivity extends AppCompatActivity {
                     textViewTime.setClickable(false);
                     //TODO: create string resource
                     reset.setText(R.string.Finished);
-                    addTask.setEnabled(false);
-                    confirm.setEnabled(false);
+                    if(!settingsPref.getBoolean("afterConfirm",false)) {
+                        addTask.setEnabled(false);
+
+
+                        confirm.setEnabled(false);
+                    }
                     activeList = true;
 
                     long tmp = convertTimeToMilli(textViewTime.getText().toString());
                     countDown(tmp);
-                    mCreateService(tmp);
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+
+
+                    boolean tmpBool = settingsPref.getBoolean("finished",true);
+                    boolean tmpBool2 = settingsPref.getBoolean("remaining",true);
+                    if(tmpBool || tmpBool2) {
+                        mCreateService(tmp);
+                    }
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && settingsPref.getBoolean("remaining",true)) {
                         buildTimerNotification(tmp);
+                    }
 
                 }
-                else {
+                else if(!settingsPref.getBoolean("noTimer",false)){
                     Toast.makeText(MainActivity.this, "Add task to List and set time", Toast.LENGTH_SHORT).show();
                     mTotalTask = 1;
+                }
+                else{//List can be started without a timer
+
+                    //Makes sure the list can no longer be edited
+                    textViewTime.setClickable(false);
+                    //TODO: create string resource
+                    reset.setText(R.string.Finished);
+                    activeList = true;
+                    if(!settingsPref.getBoolean("afterConfirm",false)) {
+                        addTask.setEnabled(false);
+                        confirm.setEnabled(false);
+                    }
+
+
+
                 }
 
 
@@ -161,6 +191,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    /*private void loadSettings(){
+        SharedPreferences settingsPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        SharedPreferences.Editor settingsEditor = settingsPreferences.edit();
+
+        boolean first = settingsPreferences.getBoolean("first",true);
+        if(first){
+            settingsEditor.putBoolean("first",false);
+            settingsEditor.putBoolean("remainingNotification",true);
+            settingsEditor.putBoolean("finishedNotification",true);
+            settingsEditor.putBoolean("soundNotification",true);
+            settingsEditor.putBoolean("dailyNotification",true);
+            settingsEditor.putBoolean("adjustAfterConfirm",false);
+            settingsEditor.putBoolean("startWithoutTimer",false);
+        }
+        settingsEditor.apply();
+    }*/
+
 
     /**
      * Creates an alarm manager that calls a broadcast receiver MyReceiver.
@@ -198,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onClick: reset Pressed");
         if(reset.getText().toString().equals("Finished?")){
 
-            Toast.makeText(MainActivity.this,"To do list Finished!\n Starting new list!",Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this,"To do list Finished!\n Starting new list!",Toast.LENGTH_LONG).show();
             reset.setText(R.string.btn_txt_reset);
         }
 
@@ -301,9 +349,13 @@ public class MainActivity extends AppCompatActivity {
      * For every table row enable checkboxes, disable edit texts, set text view's text
      */
     private void confirmTaskList(){
+        SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
+
         for(int i = 0; i<editTextArrayList.size(); i++){
-            editTextArrayList.get(i).setKeyListener(null);
-            editTextArrayList.get(i).setFocusable(false);
+            if(!settingsPref.getBoolean("afterConfirm",false)) {
+                editTextArrayList.get(i).setKeyListener(null);
+                editTextArrayList.get(i).setFocusable(false);
+            }
             checkBoxArrayList.get(i).setEnabled(true);
 
             String tmp = i+1 + " )";
@@ -464,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
         else
             editor.putString("time", textViewTime.getText().toString());
 
-        editor.putBoolean("started",countDownTimer!=null);
+        editor.putBoolean("started",activeList);
         for(int i = 0; i < editTextArrayList.size(); i++){
             editor.putString("editText "+ i, editTextArrayList.get(i).getText().toString());
             editor.putBoolean("checkBox " + i, checkBoxArrayList.get(i).isChecked());
@@ -479,6 +531,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadState() {
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
         //SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (tableRowArrayList.size() <= 0) {
@@ -492,9 +545,10 @@ public class MainActivity extends AppCompatActivity {
             textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
             if (sharedPreferences.getBoolean("started", false)) {
                 Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
-
-                addTask.setEnabled(false);
-                confirm.setEnabled(false);
+                if(!settingsPref.getBoolean("afterConfirm",false)) {
+                    addTask.setEnabled(false);
+                    confirm.setEnabled(false);
+                }
                 textViewTime.setClickable(false);
                 countDown( (convertTimeToMilli(sharedPreferences.getString("time", "00:00:00")) - diff) );
 

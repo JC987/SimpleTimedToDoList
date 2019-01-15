@@ -9,15 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <receiver
             android:name=".MyReceiver"
             android:enabled="true"
-            android:exported="false" >
-        </receiver>
-        <service android:name=".MyService" android:enabled="true"  >
-        </service>
+            android:exported="false" />
 
+        <service
+            android:name=".MyService"
+            android:enabled="true" />
 
         <activity
             android:name=".MainActivity"
@@ -31,7 +30,8 @@
 
         <receiver android:name=".MainActivity$switchButtonListener" />
 
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SplashScreen"></activity>
     </application>
 
 </manifest>

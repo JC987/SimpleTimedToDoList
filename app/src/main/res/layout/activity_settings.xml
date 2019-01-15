@@ -8,10 +8,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="96dp"
+        android:id="@+id/scrollViewSettings">
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:paddingEnd="16dp"
@@ -29,13 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/setting1TextView"
-            android:text="Enable Time Remaining Notification (Requires Android 7.0 or higher)"
+            android:text="Show Time Remaining in a Notification (Requires Android 7.0 or higher)"
             android:textSize="16sp"
             />
         <CheckBox
             android:layout_width="wrap_content"
+            android:checked="true"
             android:layout_height="wrap_content"
-            android:id="@+id/setting1CheckBox"
+            android:id="@+id/settingCheckBox1"
             />
 
     </TableRow>
@@ -52,12 +55,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting2TextView"
-                android:text="Send Reminder Notifications"
+                android:text="Send Time Finished Notification"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setting2CheckBox"
+                android:checked="true"
+                android:id="@+id/settingCheckBox2"
                 />
         </TableRow>
 
@@ -75,16 +79,158 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting3TextView"
-                android:text="Play Alarm When Times Up!"
+                android:text="Play Sound For Times Finished Notification"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setting3CheckBox"
+                android:checked="true"
+                android:id="@+id/settingCheckBox3"
                 />
         </TableRow>
 
+
+
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/setting4TextView"
+                android:text="Send daily reminders"
+                android:textSize="16sp"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:id="@+id/settingCheckBox4"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/setting5TextView"
+                android:text="Add and edit task on list after confirmed"
+                android:textSize="16sp"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:id="@+id/settingCheckBox5"
+                />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/setting6TextView"
+                android:text="Confirm list without a timer"
+                android:textSize="16sp"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:id="@+id/settingCheckBox6"
+                />
+        </TableRow>
+<!--
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/settingTextView7"
+                android:text="Allow timer to become negative"
+                android:textSize="16sp"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:id="@+id/settingCheckBox7"
+                />
+        </TableRow>
+        -->
+
+
+
+
+
+
+
+
+
     </TableLayout>
+
     </ScrollView>
+
+    <Button
+        android:id="@+id/btnRestoreDefault"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="Restore Default"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSaveSettings"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollViewSettings"
+         />
+
+    <Button
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:text="Save Settings"
+        android:textSize="12sp"
+        android:id="@+id/btnSaveSettings"
+
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollViewSettings"
+        app:layout_constraintStart_toEndOf="@id/btnRestoreDefault" />
 
 </android.support.constraint.ConstraintLayout>
