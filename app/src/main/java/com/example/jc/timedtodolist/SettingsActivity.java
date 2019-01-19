@@ -19,12 +19,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
+        //getActionBar().setTitle("Settings");
+        setTitle("Settings");
         //
         remainingNoti=findViewById(R.id.settingCheckBox1);
         finishedNoti = findViewById(R.id.settingCheckBox2);
         soundNoti = findViewById(R.id.settingCheckBox3);
-        dailyNoti = findViewById(R.id.settingCheckBox4);
+     //   dailyNoti = findViewById(R.id.settingCheckBox4);
         afterConfirm = findViewById(R.id.settingCheckBox5);
         noTimer = findViewById(R.id.settingCheckBox6);
         //negTimer = findViewById(R.id.settingCheckBox7);
@@ -68,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         finishedNoti.setChecked(true);
         soundNoti.setChecked(true);
         soundNoti.setEnabled(true);
-        dailyNoti.setChecked(true);
+        //dailyNoti.setChecked(true);
         afterConfirm.setChecked(false);
         noTimer.setChecked(false);
         //negTimer.setChecked(false);
@@ -85,7 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         remainingNoti.setChecked(sharedPreferences.getBoolean("remaining",true));
         finishedNoti.setChecked(sharedPreferences.getBoolean("finished",true));
         soundNoti.setChecked(sharedPreferences.getBoolean("sound",true));
-        dailyNoti.setChecked(sharedPreferences.getBoolean("daily",true));
+        //dailyNoti.setChecked(sharedPreferences.getBoolean("daily",true));
         afterConfirm.setChecked(sharedPreferences.getBoolean("afterConfirm",false));
         noTimer.setChecked(sharedPreferences.getBoolean("noTimer",false));
         //negTimer.setChecked(sharedPreferences.getBoolean("negTimer",false));
@@ -100,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean("remaining",remainingNoti.isChecked());
         editor.putBoolean("finished",finishedNoti.isChecked());
         editor.putBoolean("sound",soundNoti.isChecked() );
-        editor.putBoolean("daily",dailyNoti.isChecked());
+        //editor.putBoolean("daily",dailyNoti.isChecked());
         editor.putBoolean("afterConfirm",afterConfirm.isChecked());
         editor.putBoolean("noTimer",noTimer.isChecked());
         //editor.putBoolean("negTimer",negTimer.isChecked());

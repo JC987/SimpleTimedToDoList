@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         //lock the list, start the timer, create notification
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,6 +340,9 @@ public class MainActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 textViewTime.setText(R.string.Times_Up);
+                //addTask.setEnabled(false);
+                //confirm.setEnabled(false);
+
                 countDownTimer=null;
             }
         }.start();
@@ -372,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
                 i--;
             }
         }
+        mTotalTask=tableRowArrayList.size()+1;
     }
 
     /**
@@ -457,14 +462,18 @@ public class MainActivity extends AppCompatActivity {
 
         tableRow.setPadding(4,8,4,32);
 
+        SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
+
         if(check!=null && started) {
             checkBox.setEnabled(true);
             checkBox.setChecked(check);
 
-                editText.setKeyListener(null);
+            //editText.setKeyListener(null);
         }
-        else
+        else if(!settingsPref.getBoolean("afterConfirm",false)) {
             checkBox.setEnabled(false);
+          //  editText.setFocusable(false);
+        }
         Log.d(TAG, "createNewTask: set properties for views");
 
         mTotalTask++;
@@ -540,10 +549,14 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < size; i++) {
                 createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false),sharedPreferences.getBoolean("started", false));
             }
+            if(settingsPref.getBoolean("afterConfirm",false)) {
+                confirmTaskList();
+                confirm.setEnabled(false);
+            }
 
-
+            activeList = sharedPreferences.getBoolean("started", false);
             textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
-            if (sharedPreferences.getBoolean("started", false)) {
+            if (activeList && !settingsPref.getBoolean("noTimer",false)) {
                 Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
                 if(!settingsPref.getBoolean("afterConfirm",false)) {
                     addTask.setEnabled(false);
@@ -552,6 +565,10 @@ public class MainActivity extends AppCompatActivity {
                 textViewTime.setClickable(false);
                 countDown( (convertTimeToMilli(sharedPreferences.getString("time", "00:00:00")) - diff) );
 
+            }
+            else if(settingsPref.getBoolean("noTimer",false)){
+                textViewTime.setClickable(false);
+                textViewTime.setText(sharedPreferences.getString("time","00:00:00"));
             }
             else{
                 Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
