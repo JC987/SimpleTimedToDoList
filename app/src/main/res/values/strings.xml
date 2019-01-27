@@ -1,7 +1,7 @@
 <!--<!DOCTYPE resources [<!ELEMENT resources (string|string-array)*><!ELEMENT string (#PCDATA)><!ATTLIST stringname CDATA #REQUIRED><!ELEMENT string-array (item)*><!ATTLIST string-arrayname CDATA #REQUIRED><!ELEMENT item (#PCDATA)>]>
 -->
 <resources>
-    <string name="app_name">Timed To Do List</string>
+    <string name="app_name">Simple Timed To Do List</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings realted to Main Activity -->

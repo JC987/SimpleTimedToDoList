@@ -20,11 +20,14 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
@@ -47,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
     Button addTask, confirm, reset;
     Boolean activeList = false;
     TextView textViewTime;
-    ScrollView scrollView;
-    LinearLayout linearLayout;
+    MaxHeightScrollView scrollView;
+    //LinearLayout linearLayout;
     TableLayout tableLayout;
     CountDownTimer countDownTimer = null;
     Chronometer chronometer;
@@ -75,17 +78,34 @@ public class MainActivity extends AppCompatActivity {
         confirm = findViewById(R.id.btnTaskConfirm);
         textViewTime = findViewById(R.id.textTime);
         scrollView = findViewById(R.id.scrollView);
-        linearLayout = findViewById(R.id.linearLayout);
+
+        //scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new OnViewGlobalLayoutListener(scrollView,MainActivity.this));
+
+        //linearLayout = findViewById(R.id.linearLayout);
         tableLayout = findViewById(R.id.tableLayout);
         reset = findViewById(R.id.btnTaskReset);
 
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+        Log.d(TAG, "onCreate: DM height in px" + displayMetrics.heightPixels);
+        Log.d(TAG, "onCreate: DM desnity" + displayMetrics.density);
         //Calls createNewTask(...)
 
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: addTask Pressed");
-                createNewTask("",null,false);
+               /* DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int height = displayMetrics.heightPixels;
+                int width = displayMetrics.widthPixels;
+                scrollView.setMinimumHeight(1000);
+                Toast.makeText(MainActivity.this,"H: "+ height + " W: " + width,Toast.LENGTH_SHORT).show();
+             */
+              createNewTask("",null,false);
+                Log.d(TAG, "onClick: sv H" + scrollView.getHeight());
             }
         });
 
@@ -109,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 activeList=false;
                 //Stop service
                 stopService(new Intent(MainActivity.this,MyService.class));
+                mCancelService();
 
                 // TODO: BackgroundSerivce is not functioning properly the following
                 // TODO: lines will be removed
@@ -136,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
                 confirmTaskList();
 
+
                 //Check to see if there is a least 1 task and
                 // at least 1 second to complete it.
                 if(editTextArrayList.size()>0 && !textViewTime.getText().toString().equals("00:00:00")) {
@@ -147,10 +169,12 @@ public class MainActivity extends AppCompatActivity {
                     if(!settingsPref.getBoolean("afterConfirm",false)) {
                         addTask.setEnabled(false);
 
-
-                        confirm.setEnabled(false);
                     }
+
+
+                    confirm.setEnabled(false);
                     activeList = true;
+
 
                     long tmp = convertTimeToMilli(textViewTime.getText().toString());
                     countDown(tmp);
@@ -168,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(!settingsPref.getBoolean("noTimer",false)){
                     Toast.makeText(MainActivity.this, "Add task to List and set time", Toast.LENGTH_SHORT).show();
-                    mTotalTask = 1;
+                    //mTotalTask = 1;
+
                 }
                 else{//List can be started without a timer
 
@@ -177,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     //TODO: create string resource
                     reset.setText(R.string.Finished);
                     activeList = true;
+                    confirm.setEnabled(false);
                     if(!settingsPref.getBoolean("afterConfirm",false)) {
                         addTask.setEnabled(false);
                         confirm.setEnabled(false);
@@ -192,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
     /*private void loadSettings(){
         SharedPreferences settingsPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
@@ -240,6 +268,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void mCancelService(){
+        Intent notifyIntent = new Intent(MainActivity.this,
+                MyReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+                (MainActivity.this, PendingIntent.FLAG_ONE_SHOT,
+                        notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+    }
     /**
      * Reset all views and vars in order to create a new list
      */
@@ -356,11 +395,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
 
         for(int i = 0; i<editTextArrayList.size(); i++){
-            if(!settingsPref.getBoolean("afterConfirm",false)) {
+            if(!settingsPref.getBoolean("afterConfirm",false) ) {
                 editTextArrayList.get(i).setKeyListener(null);
                 editTextArrayList.get(i).setFocusable(false);
+                checkBoxArrayList.get(i).setEnabled(true);
             }
-            checkBoxArrayList.get(i).setEnabled(true);
+
+
 
             String tmp = i+1 + " )";
             textViewArrayList.get(i).setText(tmp);
@@ -428,10 +469,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createNewTask(String text, Boolean check, Boolean started){
         //Create views
-        TableRow tableRow = new TableRow(MainActivity.this);
+        final TableRow tableRow = new TableRow(MainActivity.this);
         TableLayout.LayoutParams tableRowParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT,5.0f);
 
-        EditText editText = new EditText(MainActivity.this);
+        final EditText editText = new EditText(MainActivity.this);
         TableRow.LayoutParams editTextParams = new TableRow.LayoutParams(0,TableLayout.LayoutParams.WRAP_CONTENT,4.0f);
 
         CheckBox checkBox = new CheckBox(MainActivity.this);
@@ -439,6 +480,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView1 = new TextView(this);
         TableRow.LayoutParams textViewParams= new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT,0.5f);
+
 
         // set layout parameters
         checkBoxParams.setMarginStart(30);
@@ -449,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
         tableRow.setLayoutParams(tableRowParams);
 
         // set views
-        String tmp = mTotalTask + ") ";
+        String tmp = mTotalTask + " ) ";
         textView1.setText(tmp);
         textView1.setTextSize(18);
         textView1.setTextColor(Color.parseColor("#000000"));
@@ -497,7 +539,63 @@ public class MainActivity extends AppCompatActivity {
         tableLayout.addView(tableRow);
 
         Log.d(TAG, "\n createNewTask: TABLE ROW ADDED \n");
+
+
+        // this works--
+        textView1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(MainActivity.this,"worked",Toast.LENGTH_SHORT).show();
+                mCreateDialog(tableRow);
+                return false;
+            }
+        });
     }
+
+    private void mCreateDialog(final TableRow  tableRow){
+       AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+       alert.setMessage("Are you sure you want to remove the task? (May mess up numbering)")
+               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                       dialogInterface.dismiss();
+                   }
+               })
+               .setPositiveButton("Yes, I'm Sure", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                       ViewGroup parent = (ViewGroup) tableRow.getParent();
+
+
+                           for(int j = 0; j<tableRowArrayList.size();j++){
+                               if(tableRowArrayList.get(j) == tableRow){
+                                   if (parent != null) {
+                                      /* tableRow.setVisibility(View.GONE);
+                                       tableRow.removeAllViews();
+                                       parent.removeView(tableRow);*/
+
+                                       tableRowArrayList.get(j).setVisibility(View.GONE);
+                                       tableRowArrayList.remove(j);
+                                       editTextArrayList.remove(j);
+                                       textViewArrayList.remove(j);
+                                       checkBoxArrayList.remove(j);
+
+                                   }
+                               }
+                           }
+                           //confirmTaskList();
+
+                           //saveState();
+
+
+                   }
+               })
+               .create();
+       alert.show();
+
+    }
+
 
     @Override
     protected void onPause() {
@@ -549,14 +647,14 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < size; i++) {
                 createNewTask(sharedPreferences.getString("editText " + i, ""), sharedPreferences.getBoolean("checkBox " + i, false),sharedPreferences.getBoolean("started", false));
             }
+            confirmTaskList();
             if(settingsPref.getBoolean("afterConfirm",false)) {
-                confirmTaskList();
                 confirm.setEnabled(false);
             }
 
             activeList = sharedPreferences.getBoolean("started", false);
             textViewTime.setText(sharedPreferences.getString("time", "00:00:00"));
-            if (activeList && !settingsPref.getBoolean("noTimer",false)) {
+            if (activeList && !sharedPreferences.getString("time","00:00:00").equals("00:00:00")) {
                 Log.d(TAG, "loadState: started = " +sharedPreferences.getBoolean("started", false));
                 if(!settingsPref.getBoolean("afterConfirm",false)) {
                     addTask.setEnabled(false);
@@ -566,8 +664,12 @@ public class MainActivity extends AppCompatActivity {
                 countDown( (convertTimeToMilli(sharedPreferences.getString("time", "00:00:00")) - diff) );
 
             }
-            else if(settingsPref.getBoolean("noTimer",false)){
+            else if(settingsPref.getBoolean("noTimer",false) && activeList){
                 textViewTime.setClickable(false);
+                if(!settingsPref.getBoolean("afterConfirm",false)) {
+                    addTask.setEnabled(false);
+                    confirm.setEnabled(false);
+                }
                 textViewTime.setText(sharedPreferences.getString("time","00:00:00"));
             }
             else{
@@ -581,6 +683,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
+
+
     }
 
     /**

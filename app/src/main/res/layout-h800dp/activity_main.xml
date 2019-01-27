@@ -15,7 +15,6 @@
     android:background="#FFFFFF"
     tools:context="com.example.jc.timedtodolist.MainActivity">
 
-    
     <TextView
         android:id="@+id/textTime"
         android:layout_width="wrap_content"
@@ -34,7 +33,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:scale="0.6"
+        app:scale=".8"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintHorizontal_bias="1.0"

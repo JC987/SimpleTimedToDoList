@@ -13,7 +13,7 @@ import java.util.Set;
 public class SettingsActivity extends AppCompatActivity {
 
 
-    private CheckBox remainingNoti,finishedNoti,soundNoti,dailyNoti,afterConfirm,noTimer;
+    private CheckBox remainingNoti,finishedNoti,soundNoti,dailyNoti,darkTheme,afterConfirm,noTimer;
     private Button restore,save;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
         finishedNoti = findViewById(R.id.settingCheckBox2);
         soundNoti = findViewById(R.id.settingCheckBox3);
      //   dailyNoti = findViewById(R.id.settingCheckBox4);
+     //   darkTheme = findViewById(R.id.settingCheckBox4);
         afterConfirm = findViewById(R.id.settingCheckBox5);
         noTimer = findViewById(R.id.settingCheckBox6);
         //negTimer = findViewById(R.id.settingCheckBox7);
@@ -70,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         soundNoti.setChecked(true);
         soundNoti.setEnabled(true);
         //dailyNoti.setChecked(true);
+       // darkTheme.setEnabled(false);
         afterConfirm.setChecked(false);
         noTimer.setChecked(false);
         //negTimer.setChecked(false);
@@ -87,6 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
         finishedNoti.setChecked(sharedPreferences.getBoolean("finished",true));
         soundNoti.setChecked(sharedPreferences.getBoolean("sound",true));
         //dailyNoti.setChecked(sharedPreferences.getBoolean("daily",true));
+        //darkTheme.setChecked(sharedPreferences.getBoolean("darkTheme",false));
         afterConfirm.setChecked(sharedPreferences.getBoolean("afterConfirm",false));
         noTimer.setChecked(sharedPreferences.getBoolean("noTimer",false));
         //negTimer.setChecked(sharedPreferences.getBoolean("negTimer",false));
@@ -102,6 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean("finished",finishedNoti.isChecked());
         editor.putBoolean("sound",soundNoti.isChecked() );
         //editor.putBoolean("daily",dailyNoti.isChecked());
+    //    editor.putBoolean("darkTheme",darkTheme.isChecked());
         editor.putBoolean("afterConfirm",afterConfirm.isChecked());
         editor.putBoolean("noTimer",noTimer.isChecked());
         //editor.putBoolean("negTimer",negTimer.isChecked());

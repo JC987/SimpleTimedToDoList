@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MyScrollView">
+        <attr name="maxHeight2" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="MaxHeightScrollView">
+        <attr name="maxHeight" format="dimension" />
+        <attr name = "scale" format = "float"/>
+    </declare-styleable>
+</resources>
