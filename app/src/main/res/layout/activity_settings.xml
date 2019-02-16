@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/setting1TextView"
-            android:text="Show Time Remaining in a Notification (Requires Android 7.0 or higher)"
+            android:text="@string/setting_time_remaining"
             android:textSize="16sp"
             />
         <CheckBox
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting2TextView"
-                android:text="Send Time Finished Notification"
+                android:text="@string/setting_time_finished"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting3TextView"
-                android:text="Play Sound For Times Finished Notification"
+                android:text="@string/setting_finished_sound"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting5TextView"
-                android:text="Add and edit task on list after confirmed"
+                android:text="@string/setting_edit_task"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:id="@+id/setting6TextView"
-                android:text="Confirm list without a timer"
+                android:text="@string/setting_no_timer"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
@@ -233,7 +233,7 @@
 
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Restore Default"
+        android:text="@string/setting_btn_restore"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnSaveSettings"
@@ -245,7 +245,7 @@
     <Button
         android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:text="Save Settings"
+        android:text="@string/setting_btn_save"
         android:textSize="12sp"
         android:id="@+id/btnSaveSettings"
 

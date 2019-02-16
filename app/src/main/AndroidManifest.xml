@@ -15,10 +15,6 @@
             android:enabled="true"
             android:exported="false" />
 
-        <service
-            android:name=".MyService"
-            android:enabled="true" />
-
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">

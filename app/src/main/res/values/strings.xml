@@ -15,6 +15,15 @@
     <!-- Strings related to Settings -->
     <string name="settings">Settings</string>
     <string name="other">Other</string>
+    <string name = "setting_time_remaining">Show Time Remaining in a Notification (Requires Android 7.0 or higher)</string>
+    <string name = "setting_time_finished">Send Time Finished Notification</string>
+    <string name = "setting_finished_sound">Play Sound For Times Finished Notification</string>
+    <string name = "setting_edit_task">Add and edit task on list after confirmed</string>
+    <string name = "setting_no_timer">Confirm list without a timer</string>
+    <string name = "setting_btn_restore">Restore Default</string>
+    <string name = "setting_btn_save">Save Settings</string>
+
+
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 

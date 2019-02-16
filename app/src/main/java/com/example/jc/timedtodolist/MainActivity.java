@@ -3,6 +3,8 @@ package com.example.jc.timedtodolist;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -18,6 +20,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -59,8 +62,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EditText> editTextArrayList = new ArrayList<>();
     ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
     ArrayList<TableRow> tableRowArrayList = new ArrayList<>();
-    private int mTotalTask = 1, mIdCounter = 0;
+    private int totalTask = 1, idCounter = 0;
 
+    private static final String CHANNEL_ONE_ID= "com.example.jc.simpletimedtodolist.channel_one_id";
+    private static final String CHANNEL_ONE_NAME= "com.example.jc.simpletimedtodolist.channel_one_name";
 
     final static  String TAG = "mainActivity";
     @Override
@@ -68,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //first use settings
-       // loadSettings();
 
         //instantiate vars
         chronometer = findViewById(R.id.chronometer);
@@ -78,39 +81,26 @@ public class MainActivity extends AppCompatActivity {
         confirm = findViewById(R.id.btnTaskConfirm);
         textViewTime = findViewById(R.id.textTime);
         scrollView = findViewById(R.id.scrollView);
-
-        //scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new OnViewGlobalLayoutListener(scrollView,MainActivity.this));
-
-        //linearLayout = findViewById(R.id.linearLayout);
         tableLayout = findViewById(R.id.tableLayout);
         reset = findViewById(R.id.btnTaskReset);
 
-
+        //TODO: I wanted to know the display metrics of my devices will remove later
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
         Log.d(TAG, "onCreate: DM height in px" + displayMetrics.heightPixels);
         Log.d(TAG, "onCreate: DM desnity" + displayMetrics.density);
-        //Calls createNewTask(...)
 
+
+        //Buttons onClick
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: addTask Pressed");
-               /* DisplayMetrics displayMetrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int height = displayMetrics.heightPixels;
-                int width = displayMetrics.widthPixels;
-                scrollView.setMinimumHeight(1000);
-                Toast.makeText(MainActivity.this,"H: "+ height + " W: " + width,Toast.LENGTH_SHORT).show();
-             */
-              createNewTask("",null,false);
+                createNewTask("",null,false);
                 Log.d(TAG, "onClick: sv H" + scrollView.getHeight());
             }
         });
-
-
-        //Calls setTextViewTime()
 
         textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,16 +117,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 activeList=false;
-                //Stop service
-                stopService(new Intent(MainActivity.this,MyService.class));
-                mCancelService();
-
-                // TODO: BackgroundSerivce is not functioning properly the following
-                // TODO: lines will be removed
-               // stopService(new Intent(MainActivity.this, BackgroundService.class));
-                SharedPreferences prefs= getSharedPreferences("Service", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.clear();editor.apply();
+                //Todo: delete
+                cancelAlarmManager();
 
                 //clear all notifications
                 NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -144,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     manager.cancelAll();
 
                 //call reset func
-                mResetList();
+                resetList();
                 Toast.makeText(MainActivity.this,"Resetting",Toast.LENGTH_SHORT ).show();
             }
         });
@@ -157,58 +139,55 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
                 confirmTaskList();
 
-
-                //Check to see if there is a least 1 task and
-                // at least 1 second to complete it.
+                //Check to see if there is a least 1 task and at least 1 second to complete it.
                 if(editTextArrayList.size()>0 && !textViewTime.getText().toString().equals("00:00:00")) {
 
                     //Makes sure the list can no longer be edited
-                    textViewTime.setClickable(false);
-                    //TODO: create string resource
-                    reset.setText(R.string.Finished);
-                    if(!settingsPref.getBoolean("afterConfirm",false)) {
-                        addTask.setEnabled(false);
-
-                    }
-
-
                     confirm.setEnabled(false);
                     activeList = true;
+                    textViewTime.setClickable(false);
+                    reset.setText(R.string.Finished);
 
+                    if(!settingsPref.getBoolean("afterConfirm",false)) {
+                        addTask.setEnabled(false);
+                    }
 
                     long tmp = convertTimeToMilli(textViewTime.getText().toString());
                     countDown(tmp);
 
+                    // if user want to have a remaining and/or finished notification
+                    if(settingsPref.getBoolean("finished",true) ||
+                            settingsPref.getBoolean("remaining",true)) {
 
-                    boolean tmpBool = settingsPref.getBoolean("finished",true);
-                    boolean tmpBool2 = settingsPref.getBoolean("remaining",true);
-                    if(tmpBool || tmpBool2) {
-                        mCreateService(tmp);
+                        createAlarmManager(tmp);
                     }
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && settingsPref.getBoolean("remaining",true)) {
+
+                    // Notification requires a count down chronometer, only available in N and up
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+                            settingsPref.getBoolean("remaining",true)) {
+
                         buildTimerNotification(tmp);
                     }
 
                 }
                 else if(!settingsPref.getBoolean("noTimer",false)){
-                    Toast.makeText(MainActivity.this, "Add task to List and set time", Toast.LENGTH_SHORT).show();
-                    //mTotalTask = 1;
+                    Toast.makeText(MainActivity.this, "Add task to List and set time",
+                            Toast.LENGTH_SHORT).show();
 
                 }
-                else{//List can be started without a timer
+                else{ //noTimer is true meaning the list can be started without any time
+                        //Do not need to start countDown or create notifications
 
                     //Makes sure the list can no longer be edited
                     textViewTime.setClickable(false);
-                    //TODO: create string resource
                     reset.setText(R.string.Finished);
                     activeList = true;
                     confirm.setEnabled(false);
+
                     if(!settingsPref.getBoolean("afterConfirm",false)) {
                         addTask.setEnabled(false);
                         confirm.setEnabled(false);
                     }
-
-
 
                 }
 
@@ -219,32 +198,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-    /*private void loadSettings(){
-        SharedPreferences settingsPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
-        SharedPreferences.Editor settingsEditor = settingsPreferences.edit();
-
-        boolean first = settingsPreferences.getBoolean("first",true);
-        if(first){
-            settingsEditor.putBoolean("first",false);
-            settingsEditor.putBoolean("remainingNotification",true);
-            settingsEditor.putBoolean("finishedNotification",true);
-            settingsEditor.putBoolean("soundNotification",true);
-            settingsEditor.putBoolean("dailyNotification",true);
-            settingsEditor.putBoolean("adjustAfterConfirm",false);
-            settingsEditor.putBoolean("startWithoutTimer",false);
-        }
-        settingsEditor.apply();
-    }*/
-
-
     /**
      * Creates an alarm manager that calls a broadcast receiver MyReceiver.
-     * Which calls a service to create a finish notification.
+     * Which calls a alarm manger to create a finish notification.
      * @param tmp length of time in milli till finish notification should be sent
      */
-    private void mCreateService(long tmp){
+    private void createAlarmManager(long tmp){
 
         Intent notifyIntent = new Intent(MainActivity.this,
                 MyReceiver.class);
@@ -266,9 +225,12 @@ public class MainActivity extends AppCompatActivity {
                         SystemClock.elapsedRealtime() + tmp, pendingIntent);
             }
         }
+
+
     }
 
-    private void mCancelService(){
+    private void cancelAlarmManager(){
+
         Intent notifyIntent = new Intent(MainActivity.this,
                 MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast
@@ -276,13 +238,15 @@ public class MainActivity extends AppCompatActivity {
                         notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+
+        if(alarmManager!=null)  alarmManager.cancel(pendingIntent);
 
     }
+
     /**
      * Reset all views and vars in order to create a new list
      */
-    private void mResetList(){
+    private void resetList(){
         Log.d(TAG, "onClick: reset Pressed");
         if(reset.getText().toString().equals("Finished?")){
 
@@ -299,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
         if(countDownTimer!=null)
             countDownTimer.cancel();
         tableLayout.removeAllViews();
-        mTotalTask = 1; mIdCounter = 0;
+        totalTask = 1; idCounter = 0;
 
         editTextArrayList.clear();
         tableRowArrayList.clear();
@@ -323,19 +287,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
          getMenuInflater().inflate(R.menu.menu_main,menu);
          return true;//return super.onCreateOptionsMenu(menu);
-    }
-
-    //TODO: Not currently in use, will remove.
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i ("isMyServiceRunning?", true+"");
-                return true;
-            }
-        }
-        Log.i ("isMyServiceRunning?", false+"");
-        return false;
     }
 
 
@@ -373,7 +324,8 @@ public class MainActivity extends AppCompatActivity {
                 long sec = (millisUntilFinished - (hr * 60 * 60 * 1000) - (min * 60000)) / 1000;
                 NumberFormat numberFormat = new DecimalFormat("00");
 
-                String tmp = numberFormat.format(hr) + ":" + numberFormat.format(min) + ":" + numberFormat.format(sec);
+                String tmp = numberFormat.format(hr) + ":" + numberFormat.format(min) + ":"
+                        + numberFormat.format(sec);
                 textViewTime.setText(tmp);
 
             }
@@ -417,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 i--;
             }
         }
-        mTotalTask=tableRowArrayList.size()+1;
+        totalTask=tableRowArrayList.size()+1;
     }
 
     /**
@@ -485,13 +437,14 @@ public class MainActivity extends AppCompatActivity {
         // set layout parameters
         checkBoxParams.setMarginStart(30);
 
+
         editText.setLayoutParams(editTextParams);
         checkBox.setLayoutParams(checkBoxParams);
         textView1.setLayoutParams(textViewParams);
         tableRow.setLayoutParams(tableRowParams);
 
         // set views
-        String tmp = mTotalTask + " ) ";
+        String tmp = totalTask + " ) ";
         textView1.setText(tmp);
         textView1.setTextSize(18);
         textView1.setTextColor(Color.parseColor("#000000"));
@@ -518,14 +471,14 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d(TAG, "createNewTask: set properties for views");
 
-        mTotalTask++;
+        totalTask++;
 
         //TODO: Remove mIdCounter, I thought I would need and id for each view but right now I don't
-        textView1.setId(mIdCounter);
-        editText.setId(mIdCounter+1);
-        checkBox.setId(mIdCounter+2);
+        textView1.setId(idCounter);
+        editText.setId(idCounter+1);
+        checkBox.setId(idCounter+2);
 
-        mIdCounter += 3;
+        idCounter += 3;
 
         //add views to tableRow
         textViewArrayList.add(textView1);
@@ -546,13 +499,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 Toast.makeText(MainActivity.this,"worked",Toast.LENGTH_SHORT).show();
-                mCreateDialog(tableRow);
+                createRemoveDialog(tableRow);
                 return false;
             }
         });
     }
 
-    private void mCreateDialog(final TableRow  tableRow){
+    private void createRemoveDialog(final TableRow  tableRow){
        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
        alert.setMessage("Are you sure you want to remove the task? (May mess up numbering)")
@@ -700,9 +653,21 @@ public class MainActivity extends AppCompatActivity {
             remoteViews.setChronometer(R.id.remoteChrono,l+SystemClock.elapsedRealtime(),chronometer.getFormat(),false);
             remoteViews.setTextViewText(R.id.remoteText,"done");
         }
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"channelId")
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID
+                    ,CHANNEL_ONE_NAME,manager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            manager.createNotificationChannel(notificationChannel);
+        }
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ONE_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContent(remoteViews)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -714,7 +679,6 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setContentIntent(contentIntent);
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent switchIntent = new Intent(this, switchButtonListener.class);
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, 0,
