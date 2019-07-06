@@ -8,8 +8,20 @@
     <color name="darkThemeColorPrimaryDark">#323232</color>
     <color name="darkThemeColorAccent">#50c878</color>
 
+    <color name="colorPrimaryRed">#B22222</color>
+    <color name="colorSecondaryRed">#8B0000</color>
+    <color name="colorAccentRed">#FF8C00</color>
+
+    <color name="colorPrimaryGreen">#228B22</color>
+    <color name="colorSecondaryGreen">#008000</color>
+    <color name="colorAccentGreen">#20B2AA </color>
+
+    <color name="colorPrimaryPurple">#8B008B</color>
+    <color name="colorSecondaryPurple">#800080</color>
+    <color name="colorAccentPurple">#DAA520</color>
+
     <color name="lightThemeColorPrimary">#B0B0B0</color>
     <color name="lightThemeColorPrimaryDark">#A0A0A0</color>
-    <color name="lightThemeColorAccent">#303030</color>
+    <color name="lightThemeColorAccent">#50c878</color>
 
 </resources>

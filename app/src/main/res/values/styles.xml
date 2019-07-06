@@ -8,6 +8,48 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/darkThemeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/darkThemeColorPrimaryDark</item>
+        <item name="colorAccent">@color/darkThemeColorAccent</item>
+    </style>
+
+    <!-- Red application theme. -->
+    <style name="AppThemeRed" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryRed</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryRed</item>
+        <item name="colorAccent">@color/colorAccentRed</item>
+    </style>
+
+    <!-- Green application theme. -->
+    <style name="AppThemeGreen" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryGreen</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryGreen</item>
+        <item name="colorAccent">@color/colorAccentGreen</item>
+    </style>
+
+    <!-- Green application theme. -->
+    <style name="AppThemePurple" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryPurple</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryPurple</item>
+        <item name="colorAccent">@color/colorAccentPurple</item>
+    </style>
+
+
+    <!-- Light application theme. -->
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/lightThemeColorPrimary</item>
+        <item name="colorPrimaryDark">@color/lightThemeColorPrimaryDark</item>
+        <item name="colorAccent">@color/lightThemeColorAccent</item>
+    </style>
+
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

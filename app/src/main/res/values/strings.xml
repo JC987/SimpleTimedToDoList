@@ -14,7 +14,7 @@
 
     <!-- Strings related to Settings -->
     <string name="settings">Settings</string>
-    <string name="other">Other</string>
+    <string name="theme">Customize theme</string>
     <string name = "setting_time_remaining">Show Time Remaining in a Notification (Requires Android 7.0 or higher)</string>
     <string name = "setting_time_finished">Send Time Finished Notification</string>
     <string name = "setting_finished_sound">Play Sound For Times Finished Notification</string>

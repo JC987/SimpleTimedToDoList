@@ -18,6 +18,35 @@
         android:paddingBottom="16dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp">
+<!--
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingBottom="8dp">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/themeTextView"
+                android:text="Enable standard theme"
+                android:textSize="16sp"
+                />
+
+            <Switch
+                android:id="@+id/themeSwitch"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                tools:checked="true" />
+
+        </TableRow>
+       -->
 
         <TableRow
         android:layout_width="match_parent"
@@ -25,6 +54,8 @@
         android:orientation="horizontal"
         android:layout_weight="1"
             android:paddingBottom="8dp">
+
+
 
         <TextView
             android:layout_width="wrap_content"

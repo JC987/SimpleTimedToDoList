@@ -1,6 +1,5 @@
 package com.example.jc.timedtodolist;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -8,19 +7,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -35,10 +30,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RemoteViews;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -70,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     final static  String TAG = "mainActivity";
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
+
+     //   if(settingsPref.getInt("Theme", R.style.AppTheme) == R.style.AppTheme);
+            setTheme(settingsPref.getInt("themeInt", R.style.AppTheme));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -137,11 +135,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
-                confirmTaskList();
+
 
                 //Check to see if there is a least 1 task and at least 1 second to complete it.
                 if(editTextArrayList.size()>0 && !textViewTime.getText().toString().equals("00:00:00")) {
-
+                    confirmTaskList();
                     //Makes sure the list can no longer be edited
                     confirm.setEnabled(false);
                     activeList = true;
@@ -275,14 +273,90 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuSetting:
-                Intent i = new Intent(this,SettingsActivity.class);
-                this.startActivity(i);
+                Intent intentSettings = new Intent(this,SettingsActivity.class);
+                this.startActivity(intentSettings);
                 return true;
+            case R.id.menuTheme:
+                createThemeDialog();
+                /* I wanna create a dialog box instead and have the option to go to a new page
+                Intent intentTheme = new Intent(this,SettingsActivity.class);
+                this.startActivity(intentTheme);
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
+    public void createThemeDialog(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_customize_theme, null);
+        final ImageButton blue = dialogView.findViewById(R.id.btnSquareBlue);
+        final ImageButton dark = dialogView.findViewById(R.id.btnSquareDark);
+        final ImageButton red = dialogView.findViewById(R.id.btnSquareRed);
+        final ImageButton green = dialogView.findViewById(R.id.btnSquareGreen);
+        final ImageButton purple = dialogView.findViewById(R.id.btnSquarePurple);
+        final ImageButton light = dialogView.findViewById(R.id.btnSquareLight);
+        blue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppTheme);
+            }
+        });
+        dark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeDark);
+            }
+        });
+        red.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeRed);
+            }
+        });
+        green.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeGreen);
+            }
+        });
+        purple.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemePurple);
+            }
+        });
+        light.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeLight);
+            }
+        });
+
+        dialog.setView(dialogView);
+        dialog.setTitle("Customize App Theme");
+        dialog.setMessage("Choose a theme color preset");
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void refreshActivity(int i){
+        SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
+        SharedPreferences.Editor editor = settingsPref.edit();
+        editor.putInt("themeInt",i);
+        editor.apply();
+        onPause();
+        finish();
+        startActivity(getIntent());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
          getMenuInflater().inflate(R.menu.menu_main,menu);
@@ -350,6 +424,7 @@ public class MainActivity extends AppCompatActivity {
             if(!settingsPref.getBoolean("afterConfirm",false) ) {
                 editTextArrayList.get(i).setKeyListener(null);
                 editTextArrayList.get(i).setFocusable(false);
+             //   if()
                 checkBoxArrayList.get(i).setEnabled(true);
             }
 
@@ -570,6 +645,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("pref",MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        editor.putString("reset",reset.getText().toString());
         editor.putInt("size", editTextArrayList.size());
         if(textViewTime.getText().toString().equals("Times Up!"))
             editor.putString("time","00:00:00");
@@ -593,8 +669,9 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
         //SharedPreferences.Editor editor = sharedPreferences.edit();
-
+        reset.setText(sharedPreferences.getString("reset","Reset?"));
         if (tableRowArrayList.size() <= 0) {
+
             int size = sharedPreferences.getInt("size", 0);
             long diff = SystemClock.elapsedRealtime() - sharedPreferences.getLong("systemTime",0);
             for (int i = 0; i < size; i++) {

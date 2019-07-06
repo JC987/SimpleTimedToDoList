@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menuSetting" android:title="@string/settings"
         app:showAsAction="never"/>
-    <item android:id="@+id/menuOther" android:title="@string/other"
+    <item android:id="@+id/menuTheme" android:title="@string/theme"
         app:showAsAction="never"/>
 </menu>
