@@ -70,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mSaveSettings();
+                Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
                 finish();
                 Intent refresh = new Intent(SettingsActivity.this, MainActivity.class);
                 refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -106,6 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
 
         mSaveSettings();
+        Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
     }
     private void mLoadSettings(){
 
@@ -140,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
         //editor.putBoolean("negTimer",negTimer.isChecked());
         editor.apply();
 
-        Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
+
     }
 
 

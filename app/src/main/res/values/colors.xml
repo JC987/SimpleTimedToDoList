@@ -14,11 +14,42 @@
 
     <color name="colorPrimaryGreen">#228B22</color>
     <color name="colorSecondaryGreen">#008000</color>
-    <color name="colorAccentGreen">#20B2AA </color>
+    <color name="colorAccentGreen">#f20000 </color>
 
     <color name="colorPrimaryPurple">#8B008B</color>
     <color name="colorSecondaryPurple">#800080</color>
     <color name="colorAccentPurple">#DAA520</color>
+
+    <color name="colorPrimaryGold">#FFA500</color>
+    <color name="colorSecondaryGold">#FF8C00</color>
+    <color name="colorAccentGold">#1E90FF</color>
+
+    <color name="colorPrimaryBrown">#795C34</color>
+    <color name="colorSecondaryBrown">#4B371C </color>
+    <color name="colorAccentBrown">#83CC25</color>
+
+    <color name="colorPrimaryCyan">#00b3b3</color>
+    <color name="colorSecondaryCyan">#009A9A</color>
+    <color name="colorAccentCyan">#8A2BE2</color>
+<!--
+    <color name="terminalColorPrimary">#000000</color>
+    <color name="terminalColorSecondary">#000000</color>
+    <color name="terminalColorAccent">#FFFFFF</color>
+    <color name="terminalColorBackground">#000000</color>
+    <color name="terminalColorText">#FFFFFF</color>
+
+    <color name="terminalColorPrimaryGreen">#000000</color>
+    <color name="terminalColorSecondaryGreen">#000000</color>
+    <color name="terminalColorAccentGreen">#00FF00</color>
+    <color name="terminalColorBackgroundGreen">#000000</color>
+    <color name="terminalColorTextGreen">#00FF00</color>
+
+    <color name="terminalColorPrimaryPurple">#800080</color>
+    <color name="terminalColorSecondaryPurple">#800080</color>
+    <color name="terminalColorAccentPurple">#FFFFFF</color>
+    <color name="terminalColorBackgroundPurple">#800080</color>
+    <color name="terminalColorTextPurple">#FFFFFF</color>
+    -->
 
     <color name="lightThemeColorPrimary">#B0B0B0</color>
     <color name="lightThemeColorPrimaryDark">#A0A0A0</color>

@@ -12,6 +12,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/constraint"
     android:background="#FFFFFF"
     tools:context="com.example.jc.timedtodolist.MainActivity">
 
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_txt_time"
         android:textSize="48sp"
+
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,13 +64,14 @@
     </com.example.jc.timedtodolist.MaxHeightScrollView>
 
 
-    <Button
+    <ImageButton
         android:id="@+id/btnTaskAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#FFFFFF"
+        android:textSize="16sp"
+        android:background="@drawable/circle"
         android:text="@string/btn_txt_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

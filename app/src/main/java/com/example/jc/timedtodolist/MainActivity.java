@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<TableRow> tableRowArrayList = new ArrayList<>();
     private int totalTask = 1, idCounter = 0;
 
+
     private static final String CHANNEL_ONE_ID= "com.example.jc.simpletimedtodolist.channel_one_id";
     private static final String CHANNEL_ONE_NAME= "com.example.jc.simpletimedtodolist.channel_one_name";
 
@@ -66,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
 
-     //   if(settingsPref.getInt("Theme", R.style.AppTheme) == R.style.AppTheme);
-            setTheme(settingsPref.getInt("themeInt", R.style.AppTheme));
-        super.onCreate(savedInstanceState);
+        setTheme(settingsPref.getInt("themeInt",R.style.AppTheme));
+
+
+
+            super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
         tableLayout = findViewById(R.id.tableLayout);
         reset = findViewById(R.id.btnTaskReset);
+
+      //0  addTask.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
         //TODO: I wanted to know the display metrics of my devices will remove later
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -297,6 +302,10 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton green = dialogView.findViewById(R.id.btnSquareGreen);
         final ImageButton purple = dialogView.findViewById(R.id.btnSquarePurple);
         final ImageButton light = dialogView.findViewById(R.id.btnSquareLight);
+        final ImageButton gold = dialogView.findViewById(R.id.btnSquareGold);
+        final ImageButton cyan = dialogView.findViewById(R.id.btnSquareCyan);
+        final ImageButton brown = dialogView.findViewById(R.id.btnSquareBrown);
+        
         blue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -325,12 +334,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 refreshActivity(R.style.AppThemePurple);
+
             }
         });
         light.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 refreshActivity(R.style.AppThemeLight);
+            }
+        });
+
+        gold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeGold);
+            }
+        });
+
+        cyan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeCyan);
+            }
+        });
+
+        brown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshActivity(R.style.AppThemeBrown);
             }
         });
 
@@ -522,7 +553,6 @@ public class MainActivity extends AppCompatActivity {
         String tmp = totalTask + " ) ";
         textView1.setText(tmp);
         textView1.setTextSize(18);
-        textView1.setTextColor(Color.parseColor("#000000"));
         textView1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         editText.setHint("Leave blank if not needed!");
@@ -533,6 +563,7 @@ public class MainActivity extends AppCompatActivity {
         tableRow.setPadding(4,8,4,32);
 
         SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
+
 
         if(check!=null && started) {
             checkBox.setEnabled(true);
@@ -669,6 +700,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("pref", MODE_PRIVATE);
         SharedPreferences settingsPref = getSharedPreferences("Settings",MODE_PRIVATE);
         //SharedPreferences.Editor editor = sharedPreferences.edit();
+       // if(sharedPreferences.getString("reset","Reset?").equals("Reset?"))
         reset.setText(sharedPreferences.getString("reset","Reset?"));
         if (tableRowArrayList.size() <= 0) {
 

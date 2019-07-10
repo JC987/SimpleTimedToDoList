@@ -32,7 +32,7 @@
         <item name="colorAccent">@color/colorAccentGreen</item>
     </style>
 
-    <!-- Green application theme. -->
+    <!-- Purple application theme. -->
     <style name="AppThemePurple" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryPurple</item>
@@ -40,7 +40,56 @@
         <item name="colorAccent">@color/colorAccentPurple</item>
     </style>
 
+    <style name="AppThemeGold" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryGold</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryGold</item>
+        <item name="colorAccent">@color/colorAccentGold</item>
+    </style>
 
+    <style name="AppThemeCyan" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryCyan</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryCyan</item>
+        <item name="colorAccent">@color/colorAccentCyan</item>
+    </style>
+
+    <style name="AppThemeBrown" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryBrown</item>
+        <item name="colorPrimaryDark">@color/colorSecondaryBrown</item>
+        <item name="colorAccent">@color/colorAccentBrown</item>
+    </style>
+
+    <!--
+        <style name="AppThemeTerminal" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/terminalColorPrimary</item>
+        <item name="colorPrimaryDark">@color/terminalColorSecondary</item>
+        <item name="colorAccent">@color/terminalColorAccent</item>
+        <item name="backgroundColor">@color/terminalColorBackground</item>
+        <item name="textColor">@color/terminalColorAccent</item>
+    </style>
+
+    <style name="AppThemeTerminal2" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <item name="colorPrimary">@color/terminalColorPrimaryGreen</item>
+    <item name="colorPrimaryDark">@color/terminalColorSecondaryGreen</item>
+    <item name="colorAccent">@color/terminalColorAccentGreen</item>
+    <item name="backgroundColor">@color/terminalColorBackground</item>
+    <item name="textColor">@color/terminalColorAccentGreen</item>
+</style>
+
+    <style name="AppThemeTerminalPurple" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">@color/terminalColorPrimaryPurple</item>
+        <item name="colorPrimaryDark">@color/terminalColorSecondaryPurple</item>
+        <item name="colorAccent">@color/terminalColorAccentGreen</item>
+        <item name="backgroundColor">@color/terminalColorBackgroundPurple</item>
+        <item name="textColor">@color/terminalColorAccentGreen</item>
+    </style>
+
+-->
     <!-- Light application theme. -->
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
