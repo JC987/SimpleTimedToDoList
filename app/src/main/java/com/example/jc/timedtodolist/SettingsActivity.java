@@ -15,18 +15,18 @@ import java.util.Set;
 public class SettingsActivity extends AppCompatActivity {
 
 
-    private CheckBox remainingNoti,finishedNoti,soundNoti,dailyNoti,darkTheme,afterConfirm,noTimer;
+    private CheckBox timeRemaining,finishedNoti,sound,addTaskSetting,editTask,disableTimer;
     private Button restore,save;
-   // private Switch theme;
+
 
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        mSaveSettings();
+        saveSettings();
         finish();
-        Intent refresh = new Intent(SettingsActivity.this, MainActivity.class);
+        Intent refresh = new Intent(SettingsActivity.this, testActivity.class);
         refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(refresh);
     }
@@ -34,29 +34,26 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = getSharedPreferences("Settings",MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences("Settings",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("save and load",MODE_PRIVATE);
 
-        setTheme(sharedPreferences.getInt("themeInt",R.style.AppTheme));
+        setTheme(sharedPreferences.getInt("theme",R.style.AppTheme));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         //getActionBar().setTitle("Settings");
         setTitle("Settings");
-        //
-     //   Toast.makeText(this,"theme " + theme.isChecked(),Toast.LENGTH_SHORT).show();
-        remainingNoti=findViewById(R.id.settingCheckBox1);
-        finishedNoti = findViewById(R.id.settingCheckBox2);
-        soundNoti = findViewById(R.id.settingCheckBox3);
-     //   dailyNoti = findViewById(R.id.settingCheckBox4);
-     //   darkTheme = findViewById(R.id.settingCheckBox4);
-//        theme = findViewById(R.id.themeSwitch);
-        afterConfirm = findViewById(R.id.settingCheckBox5);
-        noTimer = findViewById(R.id.settingCheckBox6);
-        //negTimer = findViewById(R.id.settingCheckBox7);
+        
+        timeRemaining =findViewById(R.id.settingTimeRemaining);
+        finishedNoti = findViewById(R.id.settingFinishedNotification);
+        sound = findViewById(R.id.settingFinishedSound);
+        addTaskSetting = findViewById(R.id.settingAddTask);
+        editTask = findViewById(R.id.settingEditTask);
+        disableTimer = findViewById(R.id.settingDisableTimer);
 
         restore = findViewById(R.id.btnRestoreDefault);
         save = findViewById(R.id.btnSaveSettings);
 
-        mLoadSettings();
+        loadSettings();
 
 
         restore.setOnClickListener(new View.OnClickListener() {
@@ -69,10 +66,10 @@ public class SettingsActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSaveSettings();
+                saveSettings();
                 Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
                 finish();
-                Intent refresh = new Intent(SettingsActivity.this, MainActivity.class);
+                Intent refresh = new Intent(SettingsActivity.this, testActivity.class);
                 refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(refresh);
             }
@@ -81,65 +78,54 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!finishedNoti.isChecked()){
-                    soundNoti.setChecked(false);
-                    soundNoti.setEnabled(false);
+                    sound.setChecked(false);
+                    sound.setEnabled(false);
                 }
                 else {
-                    //soundNoti.setChecked(true);
-                    soundNoti.setEnabled(true);
+                    //sound.setChecked(true);
+                    sound.setEnabled(true);
                 }
             }
         });
     }
     private void mRestoreSettings(){
-        remainingNoti.setChecked(true);
+        timeRemaining.setChecked(true);
         finishedNoti.setChecked(true);
-        soundNoti.setChecked(true);
-        soundNoti.setEnabled(true);
-        //dailyNoti.setChecked(true);
-       // darkTheme.setEnabled(false);
-        afterConfirm.setChecked(false);
-        noTimer.setChecked(false);
-//        theme.setChecked(true);
-        //negTimer.setChecked(false);
-
+        sound.setChecked(true);
+        sound.setEnabled(true);
+        addTaskSetting.setChecked(true);
+        editTask.setChecked(false);
+        disableTimer.setChecked(false);
         Toast.makeText(SettingsActivity.this, "Default Settings Restored!",
                 Toast.LENGTH_SHORT).show();
 
-        mSaveSettings();
+        saveSettings();
         Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
     }
-    private void mLoadSettings(){
+    private void loadSettings(){
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Settings",MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences("Settings",MODE_PRIVATE);
 
-        remainingNoti.setChecked(sharedPreferences.getBoolean("remaining",true));
-        finishedNoti.setChecked(sharedPreferences.getBoolean("finished",true));
-        soundNoti.setChecked(sharedPreferences.getBoolean("sound",true));
-        //dailyNoti.setChecked(sharedPreferences.getBoolean("daily",true));
-        //darkTheme.setChecked(sharedPreferences.getBoolean("darkTheme",false));
-        afterConfirm.setChecked(sharedPreferences.getBoolean("afterConfirm",false));
-        noTimer.setChecked(sharedPreferences.getBoolean("noTimer",false));
-//        theme.setChecked(sharedPreferences.getBoolean("Theme",true));
-        //negTimer.setChecked(sharedPreferences.getBoolean("negTimer",false));
+        timeRemaining.setChecked(settings.getBoolean("remaining",true));
+        finishedNoti.setChecked(settings.getBoolean("finished",true));
+        sound.setChecked(settings.getBoolean("sound",true));
+        addTaskSetting.setChecked(settings.getBoolean("addTaskSetting",true));
+        editTask.setChecked(settings.getBoolean("editTask",false));
+        disableTimer.setChecked(settings.getBoolean("disableTimer",false));
         if(!finishedNoti.isChecked())
-            soundNoti.setEnabled(false);
-//        Toast.makeText(this,"theme " + theme.isChecked(),Toast.LENGTH_SHORT).show();
+            sound.setEnabled(false);
 
     }
-    private void mSaveSettings(){
-        SharedPreferences sharedPreferences = getSharedPreferences("Settings",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+    private void saveSettings(){
+        SharedPreferences settings = getSharedPreferences("Settings",MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
 
-        editor.putBoolean("remaining",remainingNoti.isChecked());
+        editor.putBoolean("remaining",timeRemaining.isChecked());
         editor.putBoolean("finished",finishedNoti.isChecked());
-        editor.putBoolean("sound",soundNoti.isChecked() );
-     //   editor.putBoolean("Theme",theme.isChecked());
-        //editor.putBoolean("daily",dailyNoti.isChecked());
-    //    editor.putBoolean("darkTheme",darkTheme.isChecked());
-        editor.putBoolean("afterConfirm",afterConfirm.isChecked());
-        editor.putBoolean("noTimer",noTimer.isChecked());
-        //editor.putBoolean("negTimer",negTimer.isChecked());
+        editor.putBoolean("sound",sound.isChecked());
+        editor.putBoolean("addTaskSetting",addTaskSetting.isChecked());
+        editor.putBoolean("editTask",editTask.isChecked());
+        editor.putBoolean("disableTimer",disableTimer.isChecked());
         editor.apply();
 
 

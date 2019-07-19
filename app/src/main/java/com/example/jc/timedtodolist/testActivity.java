@@ -25,19 +25,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.RemoteViews;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 
-public class MainActivity extends AppCompatActivity {
+public class testActivity extends AppCompatActivity {
 
     Button addTask, confirmToDoList, resetToDoList;
     boolean isToDoListActive = false;
@@ -49,23 +53,23 @@ public class MainActivity extends AppCompatActivity {
     Chronometer chronometer;
     ToDoList toDoList;
 
-    private static final String CHANNEL_ONE_ID = "com.example.jc.simpletimedtodolist.channel_one_id";
-    private static final String CHANNEL_ONE_NAME = "com.example.jc.simpletimedtodolist.channel_one_name";
+    private static final String CHANNEL_ONE_ID= "com.example.jc.simpletimedtodolist.channel_one_id";
+    private static final String CHANNEL_ONE_NAME= "com.example.jc.simpletimedtodolist.channel_one_name";
 
 
     SharedPreferences sharedPreferences, settings;
-    SharedPreferences.Editor editor;
-    final static String TAG = "MainActivity";
-
+    SharedPreferences.Editor editor, settingsEditor;
+    final static String TAG = "testActivity";
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
 
-        sharedPreferences = getSharedPreferences("save and load", MODE_PRIVATE);
-        settings = getSharedPreferences("Settings", MODE_PRIVATE);
-        setTheme(sharedPreferences.getInt("theme", R.style.AppTheme));
+        sharedPreferences = getSharedPreferences("save and load",MODE_PRIVATE);
+        settings = getSharedPreferences("Settings",MODE_PRIVATE);
+        setTheme(sharedPreferences.getInt("theme",R.style.AppTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         //instantiate vars
@@ -98,16 +102,16 @@ public class MainActivity extends AppCompatActivity {
         confirmToDoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!toDoList.isToDoListEmpty() &&
-                        !(textViewTimer.getText().toString().equals(getString(R.string.default_text_time)) ||
-                                textViewTimer.getText().toString().equals(getString(R.string.disabled_timer_text)))) {
+                if(!toDoList.isToDoListEmpty() &&
+                        !( textViewTimer.getText().toString().equals(getString(R.string.default_text_time)) ||
+                                textViewTimer.getText().toString().equals("--:--:--") ) ){
                     listConfirmed();
                 }
                 //TODO:Check and then remove this else if
-                else if (settings.getBoolean("disableTimer", false))
+                else if(settings.getBoolean("disableTimer",false))
                     listConfirmed();
                 else
-                    Toast.makeText(MainActivity.this, "ToDoList and Timer can't be empty!",
+                    Toast.makeText(testActivity.this,"ToDoList and Timer can't be empty!",
                             Toast.LENGTH_LONG).show();
             }
         });
@@ -123,29 +127,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void listConfirmed() {
+    private void listConfirmed(){
         toDoList.confirmList();
         long time = 0;
-        if (!settings.getBoolean("disableTimer", false)) {
+        if(!settings.getBoolean("disableTimer",false)) {
             time = convertTimeToMilliseconds(textViewTimer.getText().toString());
             countDown(time);
         }
         confirmToDoList.setEnabled(false);
-        addTask.setEnabled(settings.getBoolean("addTaskSetting", false));
+        addTask.setEnabled(settings.getBoolean("addTaskSetting",false));
         textViewTimer.setClickable(false);
-        resetToDoList.setText(R.string.btn_text_finished);
+        resetToDoList.setText("Finished?");
         isToDoListActive = true;
-        if (settings.getBoolean("remaining", true) && !settings.getBoolean("disableTimer", false))
+        if(settings.getBoolean("remaining",true) && !settings.getBoolean("disableTimer",false))
             buildTimeRemainingNotification(time);
-        if (settings.getBoolean("finished", true) && !settings.getBoolean("disableTimer", false))
+        if(settings.getBoolean("finished",true) &&  !settings.getBoolean("disableTimer",false))
             createAlarmManager(time);
     }
 
-    private Task createNewTask() {
+    private Task createNewTask(){
         Task task = new Task(this);
         task.addNewTask();
-        if (isToDoListActive)
-            task.getTaskCheckBox().setEnabled(settings.getBoolean("addTaskSetting", true));
+        if(isToDoListActive)
+            task.getTaskCheckBox().setEnabled(settings.getBoolean("addTaskSetting",true));
         toDoList.addTask(task);
         return task;
     }
@@ -154,24 +158,22 @@ public class MainActivity extends AppCompatActivity {
      * This function will create a dialog with three num-pickers represented as
      * 'HH', 'MM', and'SS'. Then set textViewTimer according to  those values. Ex: '01:05:40'
      */
-    private void setTextViewTimer() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+    private void setTextViewTimer(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(testActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_set_time, null);
         final NumberPicker hour = dialogView.findViewById(R.id.numPickerHour);
         final NumberPicker min = dialogView.findViewById(R.id.numPickerMin);
         final NumberPicker sec = dialogView.findViewById(R.id.numPickerSec);
-        hour.setMaxValue(23);
-        min.setMaxValue(59);
-        sec.setMaxValue(59);
+        hour.setMaxValue(23);       min.setMaxValue(59);     sec.setMaxValue(59);
         dialog.setView(dialogView);
         dialog.setTitle("Set Time");
         dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 DecimalFormat decimalFormat = new DecimalFormat("00");
-                String time = decimalFormat.format(hour.getValue()) + ":" +
-                        decimalFormat.format(min.getValue()) + ":" + decimalFormat.format(sec.getValue());
+                String time = decimalFormat.format(hour.getValue())+":"+
+                        decimalFormat.format(min.getValue())+":"+decimalFormat.format(sec.getValue());
                 textViewTimer.setText(time);
             }
         });
@@ -188,31 +190,30 @@ public class MainActivity extends AppCompatActivity {
      * Set a count down timer from the time the user had chosen. Updates textViewTime.
      * @param time is long representing the time
      */
-    private void countDown(long time) {
+    private void countDown(long time){
         countDownTimer = new CountDownTimer(time, 1000) {
             public void onTick(long millisecondsRemaining) {
                 textViewTimer.setText(convertTimeToExtendedFormat(millisecondsRemaining));
             }
-
             public void onFinish() {
                 textViewTimer.setText(R.string.Times_Up);
-                countDownTimer = null;
+                countDownTimer=null;
             }
         }.start();
     }
 
-    private String convertTimeToExtendedFormat(long millisecondsRemaining) {
+    private String convertTimeToExtendedFormat(long millisecondsRemaining){
         long hr = millisecondsRemaining / (60 * 60 * 1000);
         long min = (millisecondsRemaining - (hr * 60 * 60 * 1000)) / 60000;
         long sec = (millisecondsRemaining - (hr * 60 * 60 * 1000) - (min * 60000)) / 1000;
         NumberFormat numberFormat = new DecimalFormat("00");
 
-        return numberFormat.format(hr) + ":" + numberFormat.format(min) + ":"
+        return  numberFormat.format(hr) + ":" + numberFormat.format(min) + ":"
                 + numberFormat.format(sec);
     }
 
-    private long convertTimeToMilliseconds(String time) {
-        long milli = 0;
+    private long convertTimeToMilliseconds(String time){
+        long milli=0;
         String[] arr;
         arr = time.split(":");
         milli += Integer.parseInt(arr[0]) * 60 * 60 * 1000;
@@ -222,20 +223,21 @@ public class MainActivity extends AppCompatActivity {
         return milli;
     }
 
-    private void resetViews() {
-        if (settings.getBoolean("disableTimer", false)) {
-            textViewTimer.setText(R.string.disabled_timer_text);
-            textViewTimer.setClickable(false);
-        } else {
-            textViewTimer.setText(R.string.default_text_time);
-            textViewTimer.setClickable(true);
+    private void resetViews(){
+      if(settings.getBoolean("disableTimer",false)){
+          textViewTimer.setText("--:--:--");
+          textViewTimer.setClickable(false);
+        }
+        else {
+          textViewTimer.setText(R.string.default_text_time);
+          textViewTimer.setClickable(true);
         }
         isToDoListActive = false;
-        if (countDownTimer != null)
+        if(countDownTimer!=null)
             countDownTimer.cancel();
         addTask.setEnabled(true);
         confirmToDoList.setEnabled(true);
-        resetToDoList.setText(R.string.btn_text_reset);
+        resetToDoList.setText("Reset!");
         toDoList.resetList();
         cancelAlarmManager();
         Task.setTotalNumberOfTask(0);
@@ -264,20 +266,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Creates an alarm manager that calls a broadcast receiver MyReceiver.
      * MyReceiver will create a finished notification.
-     *
      * @param time length of time in milli till finish notification should be sent
      */
-    private void createAlarmManager(long time) {
+    private void createAlarmManager(long time){
 
-        Intent notifyIntent = new Intent(MainActivity.this,
+        Intent notifyIntent = new Intent(testActivity.this,
                 MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast
-                (MainActivity.this, PendingIntent.FLAG_ONE_SHOT,
+                (testActivity.this, PendingIntent.FLAG_ONE_SHOT,
                         notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        if (alarmManager != null) {
+        if(alarmManager!=null) {
             //setExact requires api 19 or up.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Log.i(TAG, "onClick: api version greater than or equal to 19");
@@ -294,38 +295,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void cancelAlarmManager() {
+    private void cancelAlarmManager(){
 
-        Intent notifyIntent = new Intent(MainActivity.this,
+        Intent notifyIntent = new Intent(testActivity.this,
                 MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast
-                (MainActivity.this, PendingIntent.FLAG_ONE_SHOT,
+                (testActivity.this, PendingIntent.FLAG_ONE_SHOT,
                         notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        if (alarmManager != null) alarmManager.cancel(pendingIntent);
+        if(alarmManager!=null)  alarmManager.cancel(pendingIntent);
 
     }
 
 
-    private void buildTimeRemainingNotification(long time) {
-        final RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.dialog_build_time_noti);
-        remoteViews.setChronometer(R.id.remoteChrono, time + SystemClock.elapsedRealtime(), null, true);
-        remoteViews.setTextViewText(R.id.remoteText, "Time Remaining:");
-        if (time == 0) {
-            remoteViews.setChronometer(R.id.remoteChrono, time + SystemClock.elapsedRealtime(), chronometer.getFormat(), false);
-            remoteViews.setTextViewText(R.id.remoteText, "done");
+    private void buildTimeRemainingNotification(long time){
+        final RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.dialog_build_time_noti);
+        remoteViews.setChronometer(R.id.remoteChrono,time+SystemClock.elapsedRealtime(),null,true);
+        remoteViews.setTextViewText(R.id.remoteText,"Time Remaining:");
+        if(time==0) {
+            remoteViews.setChronometer(R.id.remoteChrono,time+SystemClock.elapsedRealtime(),chronometer.getFormat(),false);
+            remoteViews.setTextViewText(R.id.remoteText,"done");
         }
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O && manager != null) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O && manager != null){
             createNotificationChannel(manager);
         }
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ONE_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ONE_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContent(remoteViews)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -336,21 +337,21 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingSwitchIntent = createPendingSwitchIntent(builder);
         remoteViews.setOnClickPendingIntent(R.id.remoteButton, pendingSwitchIntent);
 
-        if (manager != null)
+        if(manager!=null)
             manager.notify(0, builder.build());
 
     }
 
-    private PendingIntent createPendingSwitchIntent(NotificationCompat.Builder builder) {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+    private PendingIntent createPendingSwitchIntent(NotificationCompat.Builder builder){
+        Intent notificationIntent = new Intent(this,testActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent =  PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
 
         Intent switchIntent = new Intent(this, MainActivity.switchButtonListener.class);
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, 0,
                 switchIntent, 0);
-        return pendingSwitchIntent;
+        return  pendingSwitchIntent;
 
     }
 
@@ -366,10 +367,10 @@ public class MainActivity extends AppCompatActivity {
         manager.createNotificationChannel(notificationChannel);
     }
 
-    private void clearAllNotifications() {
+    private void clearAllNotifications(){
         //clear all notifications
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager != null)
+        if(manager!=null)
             manager.cancelAll();
     }
 
@@ -377,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuSetting:
-                Intent intentSettings = new Intent(this, SettingsActivity.class);
+                Intent intentSettings = new Intent(this,SettingsActivity.class);
                 this.startActivity(intentSettings);
                 return true;
             case R.id.menuTheme:
@@ -387,8 +388,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createThemeDialog() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+    private void createThemeDialog(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(testActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_customize_theme, null);
         ImageButton blue = dialogView.findViewById(R.id.btnSquareBlue);
@@ -409,8 +410,7 @@ public class MainActivity extends AppCompatActivity {
         });
         dark.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeDark);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeDark);
             }
         });
         red.setOnClickListener(new View.OnClickListener() {
@@ -421,38 +421,32 @@ public class MainActivity extends AppCompatActivity {
         });
         green.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeGreen);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeGreen);
             }
         });
         purple.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemePurple);
+            public void onClick(View view) { refreshActivity(R.style.AppThemePurple);
             }
         });
         light.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeLight);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeLight);
             }
         });
         gold.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeGold);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeGold);
             }
         });
         cyan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeCyan);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeCyan);
             }
         });
         brown.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                refreshActivity(R.style.AppThemeBrown);
+            public void onClick(View view) { refreshActivity(R.style.AppThemeBrown);
             }
         });
 
@@ -470,80 +464,79 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void refreshActivity(int i) {
+    private void refreshActivity(int i){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("theme", i);
+        editor.putInt("theme",i);
         editor.apply();
-        //   onPause();
+     //   onPause();
         finish();
         startActivity(getIntent());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main,menu);
         return true;
     }
 
 
-    private void saveState() {
+
+    private void saveState(){
         editor = sharedPreferences.edit();
         saveTimer();
         editor.putLong("systemTime", SystemClock.elapsedRealtime());
-        editor.putInt("size", ToDoList.getListOfTasks().size());
-        editor.putBoolean("isActive", isToDoListActive);
-        editor.putBoolean("isAddTaskEnabled", addTask.isEnabled());
-        editor.putBoolean("isConfirmEnabled", confirmToDoList.isEnabled());
-        editor.putString("resetText", resetToDoList.getText().toString());
+        editor.putInt("size",ToDoList.getListOfTasks().size());
+        editor.putBoolean("isActive",isToDoListActive);
+        editor.putBoolean("isAddTaskEnabled",addTask.isEnabled());
+        editor.putBoolean("isConfirmEnabled",confirmToDoList.isEnabled());
+        editor.putString("resetText",resetToDoList.getText().toString());
 
         saveToDoList();
         toDoList.resetList();
         editor.apply();
     }
-
-    private void saveTimer() {
-        if (textViewTimer.getText().toString().equals("Times Up!"))
-            editor.putString("time", "00:00:00");
+    private void saveTimer(){
+        if(textViewTimer.getText().toString().equals("Times Up!"))
+            editor.putString("time","00:00:00");
         else
             editor.putString("time", textViewTimer.getText().toString());
     }
 
-    private void saveToDoList() {
+    private void saveToDoList(){
         Iterator iterator = ToDoList.getListOfTasks().iterator();
         Task currentTask;
         int ct = 1;
-        while (iterator.hasNext()) {
+        while(iterator.hasNext()){
             currentTask = (Task) iterator.next();
-            editor.putString("taskDescription " + ct,
+            editor.putString("taskDescription "+ ct,
                     currentTask.getTaskDesc().getText().toString());
-            editor.putBoolean("taskChecked " + ct, currentTask.getTaskCheckBox().isChecked());
+            editor.putBoolean("taskChecked "+ct,currentTask.getTaskCheckBox().isChecked());
             ct++;
         }
     }
-
-    private void loadState() {
+    private void loadState(){
         Log.d(TAG, "loadState: ");
-        if (toDoList.isToDoListEmpty()) {
+        if(toDoList.isToDoListEmpty()) {
             Log.d(TAG, "loadState: list is empty");
-            isToDoListActive = sharedPreferences.getBoolean("isActive", false);
-            loadToDoList();
-            loadTimer();
-            addTask.setEnabled(sharedPreferences.getBoolean("isAddTaskEnabled", true));
-            confirmToDoList.setEnabled(sharedPreferences.getBoolean("isConfirmEnabled", true));
-            resetToDoList.setText(sharedPreferences.getString("resetText", getString(R.string.btn_text_reset)));
+           isToDoListActive = sharedPreferences.getBoolean("isActive", false);
+           loadToDoList();
+           loadTimer();
+           addTask.setEnabled(sharedPreferences.getBoolean("isAddTaskEnabled",true));
+           confirmToDoList.setEnabled(sharedPreferences.getBoolean("isConfirmEnabled",true));
+           resetToDoList.setText(sharedPreferences.getString("resetText",getString(R.string.btn_text_reset)));
         }
 
 
     }
 
-    private void loadToDoList() {
+    private void loadToDoList(){
         int size = sharedPreferences.getInt("size", 0);
         Log.d(TAG, "loadToDoList: ");
         for (int i = 1; i <= size; i++) {
             Task newTask = createNewTask();
             newTask.getTaskDesc().setText(sharedPreferences.getString("taskDescription " + i, ""));
 
-            if (!settings.getBoolean("editTask", false)) {
+            if(!settings.getBoolean("editTask",false)) {
                 newTask.getTaskDesc().setKeyListener(null);
                 newTask.getTaskDesc().setFocusable(false);
             }
@@ -559,34 +552,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "loadTimer: ");
         String time = sharedPreferences.getString("time", "00:00:00");
 
-        if (settings.getBoolean("disableTimer", false))
-            time = getString(R.string.disabled_timer_text);
-        else if (time.equals(getString(R.string.disabled_timer_text)) && !settings.getBoolean("disableTimer", false))
+        if(settings.getBoolean("disableTimer",false))
+            time = "--:--:--";
+        else if(time.equals("--:--:--") && !settings.getBoolean("disableTimer",false))
             time = getString(R.string.default_text_time);
 
         textViewTimer.setText(time);
         if (isToDoListActive) {
             Log.d(TAG, "loadTimer: list is active");
             textViewTimer.setClickable(false);
-            if (!textViewTimer.getText().toString().equals(getString(R.string.disabled_timer_text)))
+            if(!textViewTimer.getText().toString().equals("--:--:--"))
                 countDown((convertTimeToMilliseconds(time) - difference));
         }
     }
 
-
-    /**
-     * This class will close the notification once the button is pressed.
-     */
-    public static class switchButtonListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            Log.d(TAG, "I am here");
-
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (manager != null)
-                manager.cancelAll();
-        }
-    }
 
 }

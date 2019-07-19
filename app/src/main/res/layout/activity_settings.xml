@@ -61,7 +61,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/setting1TextView"
             android:text="@string/setting_time_remaining"
             android:textSize="16sp"
             />
@@ -69,7 +68,7 @@
             android:layout_width="wrap_content"
             android:checked="true"
             android:layout_height="wrap_content"
-            android:id="@+id/settingCheckBox1"
+            android:id="@+id/settingTimeRemaining"
             />
 
     </TableRow>
@@ -85,14 +84,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/setting2TextView"
                 android:text="@string/setting_time_finished"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:id="@+id/settingCheckBox2"
+                android:id="@+id/settingFinishedNotification"
                 />
         </TableRow>
 
@@ -109,68 +107,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/setting3TextView"
                 android:text="@string/setting_finished_sound"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:id="@+id/settingCheckBox3"
+                android:id="@+id/settingFinishedSound"
                 />
         </TableRow>
 
-        <!--
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/setting4TextView"
-                        android:text="Enable dark theme"
-                        android:textSize="16sp"/>
-                    <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"
-                        android:id="@+id/settingCheckBox4"
-                        />
-                </TableRow>
-
-
-
-
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/setting4TextView"
-                        android:text="Send daily reminders"
-                        android:textSize="16sp"/>
-                    <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:id="@+id/settingCheckBox4"
-                        />
-                </TableRow>
-                -->
 
         <TableRow
             android:layout_width="match_parent"
@@ -184,14 +130,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/setting5TextView"
+                android:text="@string/setting_add_task"
+                android:textSize="16sp"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:id="@+id/settingAddTask"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/setting_edit_task"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:id="@+id/settingCheckBox5"
+                android:id="@+id/settingEditTask"
                 />
         </TableRow>
 
@@ -208,14 +175,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/setting6TextView"
                 android:text="@string/setting_no_timer"
                 android:textSize="16sp"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:id="@+id/settingCheckBox6"
+                android:id="@+id/settingDisableTimer"
                 />
         </TableRow>
 <!--

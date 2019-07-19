@@ -96,12 +96,17 @@
         <item name="colorPrimary">@color/lightThemeColorPrimary</item>
         <item name="colorPrimaryDark">@color/lightThemeColorPrimaryDark</item>
         <item name="colorAccent">@color/lightThemeColorAccent</item>
+
     </style>
 
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheemNew">
+
     </style>
 
 

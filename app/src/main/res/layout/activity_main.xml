@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true">
 
 
@@ -12,7 +13,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
     tools:context="com.example.jc.timedtodolist.MainActivity">
 
     
@@ -20,7 +20,7 @@
         android:id="@+id/textTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/default_txt_time"
+        android:text="@string/default_text_time"
         android:textSize="48sp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -68,7 +68,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/btn_txt_add"
+        android:text="@string/btn_text_add"
 
         android:textSize="18sp"
         android:textAlignment="center"
@@ -87,7 +87,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/btn_txt_confirm"
+        android:text="@string/btn_text_confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/btn_txt_reset"
+        android:text="@string/btn_text_reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnTaskAdd"
         app:layout_constraintLeft_toLeftOf="parent"

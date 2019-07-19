@@ -10,9 +10,10 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ScrollView;
 
+
 public class MaxHeightScrollView extends ScrollView {
 
-    private int maxHeight, deviceHeight, deviceWidth;
+    private int  deviceHeight;
     private float scale;
     private final int defaultHeight = 200;
 
@@ -50,7 +51,7 @@ public class MaxHeightScrollView extends ScrollView {
         if (attrs != null) {
             TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView);
             //200 is a defualt value
-            maxHeight = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_maxHeight, defaultHeight);
+           // maxHeight = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_maxHeight, defaultHeight);
            // scale = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_scale,1);
             scale = styledAttrs.getFloat(R.styleable.MaxHeightScrollView_scale,0.5f);
             styledAttrs.recycle();
@@ -66,11 +67,19 @@ public class MaxHeightScrollView extends ScrollView {
         catch(NullPointerException e){
             Log.d("ViewGlobal", "OnViewGlobalLayoutListener: null");
         }
-        deviceWidth= displayMetrics.widthPixels;
+       // deviceWidth= displayMetrics.widthPixels;
         deviceHeight = displayMetrics.heightPixels;
+
     }
+    /*
+    This will set the max height of the scroll view
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        //Scale is a float value between 0-1.
+        //newHeight is going to be the max height of the scroll view in pxs.
+        //So if scale is 0.5f and deviceHeight is 1000px then newHeight's value will be 500px.
+        //This is like saying I want the scrollview to take up half the screen or whatever scale is.
         int newHeight = (int) (scale * deviceHeight);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

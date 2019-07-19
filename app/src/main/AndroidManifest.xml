@@ -23,6 +23,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <activity android:name=".testActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
         </activity>
 
         <receiver android:name=".MainActivity$switchButtonListener" />

@@ -64,7 +64,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setOngoing(false)
                     .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-            Intent notificationIntent = new Intent(this, MainActivity.class);
+            Intent notificationIntent = new Intent(this, testActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             builder.setContentIntent(contentIntent);
