@@ -15,7 +15,7 @@ import java.util.Set;
 public class SettingsActivity extends AppCompatActivity {
 
 
-    private CheckBox timeRemaining,finishedNoti,sound,addTaskSetting,editTask,disableTimer;
+    private CheckBox timeRemaining,finishedNoti,sound,addTaskSetting,editTask,disableTimer,addTimeSetting;
     private Button restore,save;
 
 
@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         saveSettings();
         finish();
-        Intent refresh = new Intent(SettingsActivity.this, testActivity.class);
+        Intent refresh = new Intent(SettingsActivity.this, MainActivity.class);
         refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(refresh);
     }
@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         addTaskSetting = findViewById(R.id.settingAddTask);
         editTask = findViewById(R.id.settingEditTask);
         disableTimer = findViewById(R.id.settingDisableTimer);
-
+        addTimeSetting = findViewById(R.id.settingAddTime);
         restore = findViewById(R.id.btnRestoreDefault);
         save = findViewById(R.id.btnSaveSettings);
 
@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
                 saveSettings();
                 Toast.makeText(SettingsActivity.this, "Settings Saved!", Toast.LENGTH_SHORT).show();
                 finish();
-                Intent refresh = new Intent(SettingsActivity.this, testActivity.class);
+                Intent refresh = new Intent(SettingsActivity.this, MainActivity.class);
                 refresh.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(refresh);
             }
@@ -96,6 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         addTaskSetting.setChecked(true);
         editTask.setChecked(false);
         disableTimer.setChecked(false);
+        addTimeSetting.setChecked(false);
         Toast.makeText(SettingsActivity.this, "Default Settings Restored!",
                 Toast.LENGTH_SHORT).show();
 
@@ -111,6 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
         sound.setChecked(settings.getBoolean("sound",true));
         addTaskSetting.setChecked(settings.getBoolean("addTaskSetting",true));
         editTask.setChecked(settings.getBoolean("editTask",false));
+        addTimeSetting.setChecked(settings.getBoolean("addTimeSetting", false));
         disableTimer.setChecked(settings.getBoolean("disableTimer",false));
         if(!finishedNoti.isChecked())
             sound.setEnabled(false);
@@ -126,6 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean("addTaskSetting",addTaskSetting.isChecked());
         editor.putBoolean("editTask",editTask.isChecked());
         editor.putBoolean("disableTimer",disableTimer.isChecked());
+        editor.putBoolean("addTimeSetting", addTimeSetting.isChecked());
         editor.apply();
 
 

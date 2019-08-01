@@ -24,6 +24,7 @@
     <string name = "setting_add_task">Add tasks to list after confirmed</string>
     <string name = "setting_edit_task">Edit tasks on list after confirmed</string>
     <string name = "setting_no_timer">Disable the timer</string>
+    <string name = "setting_add_time">Add time to timer after list confirmed</string>
     <string name = "setting_btn_restore">Restore Default</string>
     <string name = "setting_btn_save">Save Settings</string>
 

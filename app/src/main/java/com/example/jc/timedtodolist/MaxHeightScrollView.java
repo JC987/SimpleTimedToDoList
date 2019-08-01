@@ -57,6 +57,12 @@ public class MaxHeightScrollView extends ScrollView {
             styledAttrs.recycle();
         }
     }
+    public void setScale(float scale){
+        this.scale = scale;
+    }
+    public float getScale(){
+        return scale;
+    }
 
     private void setContext(Context context){
         DisplayMetrics displayMetrics = new DisplayMetrics();

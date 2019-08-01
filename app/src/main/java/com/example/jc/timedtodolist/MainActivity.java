@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.widget.NumberPicker;
 import android.widget.RemoteViews;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
@@ -80,10 +82,25 @@ public class MainActivity extends AppCompatActivity {
         toDoList = new ToDoList(this);
         toDoList.setTableLayout(tableLayout);
 
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (getResources().getConfiguration().smallestScreenWidthDp >= 720 )
+                maxHeightScrollView.setScale(0.6f);
+            else if( getResources().getConfiguration().smallestScreenWidthDp >= 600)
+                maxHeightScrollView.setScale(0.5f);
+        }
+
         textViewTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setTextViewTimer();
+                    setTextViewTimer();
+
+            }
+        });
+        textViewTimer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                setTimeTimePicker();
+                return false;
             }
         });
         addTask.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Log.d(TAG, "onClick: addTask Pressed");
-                createNewTask();
+                    createNewTask();
+
             }
         });
 
@@ -132,7 +150,11 @@ public class MainActivity extends AppCompatActivity {
         }
         confirmToDoList.setEnabled(false);
         addTask.setEnabled(settings.getBoolean("addTaskSetting", false));
-        textViewTimer.setClickable(false);
+        if(!settings.getBoolean("addTimeSetting", false))
+            textViewTimer.setClickable(false);
+        else
+            textViewTimer.setClickable(!settings.getBoolean("disableTimer",false));
+        textViewTimer.setLongClickable(false);
         resetToDoList.setText(R.string.btn_text_finished);
         isToDoListActive = true;
         if (settings.getBoolean("remaining", true) && !settings.getBoolean("disableTimer", false))
@@ -150,6 +172,27 @@ public class MainActivity extends AppCompatActivity {
         return task;
     }
 
+    public void setTimeTimePicker(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_time_picker, null);
+        final TimePicker timePicker = dialogView.findViewById(R.id.timerPicker);
+        timePicker.setIs24HourView(true);
+        dialog.setView(dialogView);
+        dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DecimalFormat decimalFormat = new DecimalFormat("00");
+                String time =( decimalFormat.format(timePicker.getCurrentHour())
+                        + ":" + decimalFormat.format(timePicker.getCurrentMinute())
+                        + ":" + decimalFormat.format(0) );
+                textViewTimer.setText(time);
+                dialogInterface.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
     /**
      * This function will create a dialog with three num-pickers represented as
      * 'HH', 'MM', and'SS'. Then set textViewTimer according to  those values. Ex: '01:05:40'
@@ -158,13 +201,25 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_set_time, null);
+
+        dialog.setView(dialogView);
+        if(settings.getBoolean("addTimeSetting", false) && isToDoListActive){
+            addTimeNumberPicker(dialog,dialogView);
+        }
+        else {
+            setTimeNumberPicker(dialog, dialogView);
+        }
+        dialog.show();
+    }
+
+    private void setTimeNumberPicker(AlertDialog.Builder dialog, View dialogView){
         final NumberPicker hour = dialogView.findViewById(R.id.numPickerHour);
         final NumberPicker min = dialogView.findViewById(R.id.numPickerMin);
         final NumberPicker sec = dialogView.findViewById(R.id.numPickerSec);
         hour.setMaxValue(23);
         min.setMaxValue(59);
         sec.setMaxValue(59);
-        dialog.setView(dialogView);
+
         dialog.setTitle("Set Time");
         dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
@@ -173,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                 String time = decimalFormat.format(hour.getValue()) + ":" +
                         decimalFormat.format(min.getValue()) + ":" + decimalFormat.format(sec.getValue());
                 textViewTimer.setText(time);
+
             }
         });
         dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -181,7 +237,51 @@ public class MainActivity extends AppCompatActivity {
                 dialogInterface.dismiss();
             }
         });
-        dialog.show();
+    }
+
+    private void addTimeNumberPicker(AlertDialog.Builder dialog, View dialogView){
+        final NumberPicker hour = dialogView.findViewById(R.id.numPickerHour);
+        final NumberPicker min = dialogView.findViewById(R.id.numPickerMin);
+        final NumberPicker sec = dialogView.findViewById(R.id.numPickerSec);
+        hour.setMaxValue(23);
+        min.setMaxValue(59);
+        sec.setMaxValue(59);
+
+        dialog.setTitle("Add Time");
+        dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String[] currentTimerValue;
+                if(!textViewTimer.getText().toString().equals(getString(R.string.Times_Up)))
+                    currentTimerValue = textViewTimer.getText().toString().split(":");
+                else
+                    currentTimerValue = getString(R.string.default_text_time).split(":");
+
+                DecimalFormat decimalFormat = new DecimalFormat("00");
+                String time = decimalFormat.format(
+                        (hour.getValue()) + (Integer.parseInt(currentTimerValue[0])) )
+                        + ":" + decimalFormat.format(
+                        min.getValue() + (Integer.parseInt(currentTimerValue[1])))
+                        + ":" + decimalFormat.format(
+                        sec.getValue() + (Integer.parseInt(currentTimerValue[2])));
+                textViewTimer.setText(time);
+                if (!settings.getBoolean("disableTimer", false)) {
+                    if(countDownTimer != null)
+                        countDownTimer.cancel();
+                    long tmp = convertTimeToMilliseconds(textViewTimer.getText().toString());
+                    countDown(tmp);
+                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    manager.cancelAll();
+                    buildTimeRemainingNotification(tmp);
+                }
+            }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
     }
 
     /***
@@ -226,9 +326,11 @@ public class MainActivity extends AppCompatActivity {
         if (settings.getBoolean("disableTimer", false)) {
             textViewTimer.setText(R.string.disabled_timer_text);
             textViewTimer.setClickable(false);
+            textViewTimer.setLongClickable(false);
         } else {
             textViewTimer.setText(R.string.default_text_time);
             textViewTimer.setClickable(true);
+            textViewTimer.setLongClickable(true);
         }
         isToDoListActive = false;
         if (countDownTimer != null)
@@ -532,8 +634,6 @@ public class MainActivity extends AppCompatActivity {
             confirmToDoList.setEnabled(sharedPreferences.getBoolean("isConfirmEnabled", true));
             resetToDoList.setText(sharedPreferences.getString("resetText", getString(R.string.btn_text_reset)));
         }
-
-
     }
 
     private void loadToDoList() {
@@ -559,18 +659,25 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "loadTimer: ");
         String time = sharedPreferences.getString("time", "00:00:00");
 
-        if (settings.getBoolean("disableTimer", false))
+        if (settings.getBoolean("disableTimer", false)) {
             time = getString(R.string.disabled_timer_text);
-        else if (time.equals(getString(R.string.disabled_timer_text)) && !settings.getBoolean("disableTimer", false))
+            textViewTimer.setClickable(false);
+            textViewTimer.setLongClickable(false);
+        } else if (time.equals(getString(R.string.disabled_timer_text)) && !settings.getBoolean("disableTimer", false)){
             time = getString(R.string.default_text_time);
-
+            textViewTimer.setClickable(true);
+            textViewTimer.setLongClickable(true);
+        }
         textViewTimer.setText(time);
         if (isToDoListActive) {
             Log.d(TAG, "loadTimer: list is active");
-            textViewTimer.setClickable(false);
+            textViewTimer.setClickable((!settings.getBoolean("disableTimer", false)) && settings.getBoolean("addTimeSetting", false));
+            textViewTimer.setLongClickable(false);
             if (!textViewTimer.getText().toString().equals(getString(R.string.disabled_timer_text)))
                 countDown((convertTimeToMilliseconds(time) - difference));
         }
+      //  if (getResources().getString(R.string.Times_Up).equals(textViewTimer.getText().toString()))
+        //    textViewTimer.setClickable(false);
     }
 
 
