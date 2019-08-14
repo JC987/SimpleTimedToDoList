@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -270,9 +271,11 @@ public class MainActivity extends AppCompatActivity {
                         countDownTimer.cancel();
                     long tmp = convertTimeToMilliseconds(textViewTimer.getText().toString());
                     countDown(tmp);
+                    cancelAlarmManager();
                     NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     manager.cancelAll();
                     buildTimeRemainingNotification(tmp);
+                    createAlarmManager(tmp);
                 }
             }
         });
@@ -434,7 +437,6 @@ public class MainActivity extends AppCompatActivity {
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
-
         PendingIntent pendingSwitchIntent = createPendingSwitchIntent(builder);
         remoteViews.setOnClickPendingIntent(R.id.remoteButton, pendingSwitchIntent);
 
@@ -461,6 +463,7 @@ public class MainActivity extends AppCompatActivity {
     private void createNotificationChannel(NotificationManager manager) {
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID
                 , CHANNEL_ONE_NAME, manager.IMPORTANCE_HIGH);
+
         notificationChannel.enableLights(true);
         notificationChannel.setLightColor(Color.RED);
         notificationChannel.setShowBadge(true);
@@ -488,6 +491,48 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    private void changeCurrentImageButtonsBackground(ImageButton[] imageButtonArray){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int currentTheme = sharedPreferences.getInt("theme", R.style.AppTheme);
+            switch (currentTheme){
+                case R.style.AppTheme:
+                    imageButtonArray[0].setBackground(getDrawable(R.drawable.square_blue_transparent));
+                    imageButtonArray[0].setEnabled(false);
+                    break;
+                case R.style.AppThemeDark:
+                    imageButtonArray[1].setBackground(getDrawable(R.drawable.square_dark_transparent));
+                    imageButtonArray[1].setEnabled(false);
+                    break;
+                case R.style.AppThemeRed:
+                    imageButtonArray[2].setBackground(getDrawable(R.drawable.square_red_transparent));
+                    imageButtonArray[2].setEnabled(false);
+                    break;
+                case R.style.AppThemeLight:
+                    imageButtonArray[3].setBackground(getDrawable(R.drawable.square_light_transparent));
+                    imageButtonArray[3].setEnabled(false);
+                    break;
+                case R.style.AppThemeGreen:
+                    imageButtonArray[4].setBackground(getDrawable(R.drawable.square_green_transparent));
+                    imageButtonArray[4].setEnabled(false);
+                    break;
+                case R.style.AppThemePurple:
+                    imageButtonArray[5].setBackground(getDrawable(R.drawable.square_purple_transparent));
+                    imageButtonArray[5].setEnabled(false);
+                case R.style.AppThemeGold:
+                    imageButtonArray[6].setBackground(getDrawable(R.drawable.square_gold_transparent));
+                    imageButtonArray[6].setEnabled(false);
+                    break;
+                case R.style.AppThemeCyan:
+                    imageButtonArray[7].setBackground(getDrawable(R.drawable.square_cyan_transparent));
+                    imageButtonArray[7].setEnabled(false);
+                    break;
+                case R.style.AppThemeBrown:
+                    imageButtonArray[8].setBackground(getDrawable(R.drawable.square_brown_transparent));
+                    imageButtonArray[8].setEnabled(false);
+                    break;
+            }
+        }
+    }
 
     private void createThemeDialog() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
@@ -496,13 +541,16 @@ public class MainActivity extends AppCompatActivity {
         ImageButton blue = dialogView.findViewById(R.id.btnSquareBlue);
         ImageButton dark = dialogView.findViewById(R.id.btnSquareDark);
         ImageButton red = dialogView.findViewById(R.id.btnSquareRed);
+        ImageButton light = dialogView.findViewById(R.id.btnSquareLight);
         ImageButton green = dialogView.findViewById(R.id.btnSquareGreen);
         ImageButton purple = dialogView.findViewById(R.id.btnSquarePurple);
-        ImageButton light = dialogView.findViewById(R.id.btnSquareLight);
         ImageButton gold = dialogView.findViewById(R.id.btnSquareGold);
         ImageButton cyan = dialogView.findViewById(R.id.btnSquareCyan);
         ImageButton brown = dialogView.findViewById(R.id.btnSquareBrown);
+        ImageButton[] imageButtonArray = {blue,dark,red,light,green,purple,gold,cyan,brown};
 
+
+            changeCurrentImageButtonsBackground(imageButtonArray);
         blue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

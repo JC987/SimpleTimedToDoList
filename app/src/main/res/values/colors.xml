@@ -3,34 +3,65 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryTransparent">#803F51B5</color>
+    <color name="colorPrimaryDarkTransparent">#80303F9F</color>
+    <color name="colorAccentTransparent">#80FF4081</color>
 
     <color name="darkThemeColorPrimary">#444444</color>
     <color name="darkThemeColorPrimaryDark">#323232</color>
     <color name="darkThemeColorAccent">#50c878</color>
 
+    <color name="darkThemeColorPrimaryTransparent">#80444444</color>
+    <color name="darkThemeColorPrimaryDarkTransparent">#80323232</color>
+    <color name="darkThemeColorAccentTransparent">#8050c878</color>
+
     <color name="colorPrimaryRed">#B22222</color>
     <color name="colorSecondaryRed">#8B0000</color>
     <color name="colorAccentRed">#FF8C00</color>
+
+    <color name="colorPrimaryRedTransparent">#80B22222</color>
+    <color name="colorSecondaryRedTransparent">#808B0000</color>
+    <color name="colorAccentRedTransparent">#80FF8C00</color>
 
     <color name="colorPrimaryGreen">#228B22</color>
     <color name="colorSecondaryGreen">#008000</color>
     <color name="colorAccentGreen">#f20000 </color>
 
+    <color name="colorPrimaryGreenTransparent">#80228B22</color>
+    <color name="colorSecondaryGreenTransparent">#80008000</color>
+    <color name="colorAccentGreenTransparent">#80f20000 </color>
+
     <color name="colorPrimaryPurple">#8B008B</color>
     <color name="colorSecondaryPurple">#800080</color>
     <color name="colorAccentPurple">#DAA520</color>
+
+    <color name="colorPrimaryPurpleTransparent">#808B008B</color>
+    <color name="colorSecondaryPurpleTransparent">#80800080</color>
+    <color name="colorAccentPurpleTransparent">#80DAA520</color>
 
     <color name="colorPrimaryGold">#FFA500</color>
     <color name="colorSecondaryGold">#FF8C00</color>
     <color name="colorAccentGold">#1E90FF</color>
 
+    <color name="colorPrimaryGoldTransparent">#80FFA500</color>
+    <color name="colorSecondaryGoldTransparent">#80FF8C00</color>
+    <color name="colorAccentGoldTransparent">#801E90FF</color>
+
     <color name="colorPrimaryBrown">#795C34</color>
     <color name="colorSecondaryBrown">#4B371C </color>
     <color name="colorAccentBrown">#83CC25</color>
 
+    <color name="colorPrimaryBrownTransparent">#80795C34</color>
+    <color name="colorSecondaryBrownTransparent">#804B371C </color>
+    <color name="colorAccentBrownTransparent">#8083CC25</color>
+
     <color name="colorPrimaryCyan">#00b3b3</color>
     <color name="colorSecondaryCyan">#009A9A</color>
     <color name="colorAccentCyan">#8A2BE2</color>
+
+    <color name="colorPrimaryCyanTransparent">#8000b3b3</color>
+    <color name="colorSecondaryCyanTransparent">#80009A9A</color>
+    <color name="colorAccentCyanTransparent">#808A2BE2</color>
 <!--
     <color name="terminalColorPrimary">#000000</color>
     <color name="terminalColorSecondary">#000000</color>
@@ -54,6 +85,10 @@
     <color name="lightThemeColorPrimary">#B0B0B0</color>
     <color name="lightThemeColorPrimaryDark">#A0A0A0</color>
     <color name="lightThemeColorAccent">#50c878</color>
+
+    <color name="lightThemeColorPrimaryTransparent">#80B0B0B0</color>
+    <color name="lightThemeColorPrimaryDarkTransparent">#80A0A0A0</color>
+    <color name="lightThemeColorAccentTransparent">#8050c878</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
