@@ -15,7 +15,7 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i("Receiver", "onReceive: ");
+        Log.i("MyReceiver", "onReceive: ");
         //Intent intent1 = new Intent(context, MyService.class);
         //context.startService(intent1);
 
@@ -23,7 +23,8 @@ public class MyReceiver extends BroadcastReceiver {
         NotificationCompat.Builder nb = notificationHelper.getNotification();
         notificationHelper.getManager().cancelAll();
 
-        notificationHelper.getManager().notify(1, nb.build());
+        if(nb != null)
+            notificationHelper.getManager().notify(1, nb.build());
 
 
     }

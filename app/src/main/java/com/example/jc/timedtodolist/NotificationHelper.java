@@ -15,6 +15,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 
 public class NotificationHelper extends ContextWrapper {
@@ -53,7 +54,6 @@ public class NotificationHelper extends ContextWrapper {
 
         //If the user wants a times finished notification
         if(settingsPref.getBoolean("finished",true)) {
-
             Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelID)
@@ -75,6 +75,10 @@ public class NotificationHelper extends ContextWrapper {
 
             return builder;
 
+        }
+        else{
+            Log.d(TAG, "getNotification: no finished notification.");
+            getManager().cancelAll();
         }
         return null;
     }

@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 toDoList.resetList();
                 resetViews();
-                cancelAlarmManager();
+                //cancelAlarmManager();
                 clearAllNotifications();
             }
         });
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         isToDoListActive = true;
         if (settings.getBoolean("remaining", true) && !settings.getBoolean("disableTimer", false))
             buildTimeRemainingNotification(time);
-        if (settings.getBoolean("finished", true) && !settings.getBoolean("disableTimer", false))
+        if ( !settings.getBoolean("disableTimer", false))
             createAlarmManager(time);
     }
 
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_time_picker, null);
         final TimePicker timePicker = dialogView.findViewById(R.id.timerPicker);
         timePicker.setIs24HourView(true);
+        dialog.setTitle("Set Time");
         dialog.setView(dialogView);
         dialog.setPositiveButton("Done", new DialogInterface.OnClickListener() {
             @Override
@@ -372,8 +373,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param time length of time in milli till finish notification should be sent
      */
-    private void createAlarmManager(long time) {
-
+    private void  createAlarmManager(long time) {
         Intent notifyIntent = new Intent(MainActivity.this,
                 MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast
@@ -400,7 +400,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void cancelAlarmManager() {
-
         Intent notifyIntent = new Intent(MainActivity.this,
                 MyReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast
