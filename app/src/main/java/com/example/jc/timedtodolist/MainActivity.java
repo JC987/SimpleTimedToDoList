@@ -517,6 +517,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.style.AppThemePurple:
                     imageButtonArray[5].setBackground(getDrawable(R.drawable.square_purple_transparent));
                     imageButtonArray[5].setEnabled(false);
+                    break;
                 case R.style.AppThemeGold:
                     imageButtonArray[6].setBackground(getDrawable(R.drawable.square_gold_transparent));
                     imageButtonArray[6].setEnabled(false);
