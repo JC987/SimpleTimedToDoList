@@ -24,7 +24,7 @@ public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "com.example.jc.simpletimedtodolist.channel_two_id";
     public static final String channelName = "com.example.jc.simpletimedtodolist.channel_two_name";
 
-    private NotificationManager mManager;
+    private NotificationManager manager;
 
     public NotificationHelper(Context base) {
         super(base);
@@ -41,11 +41,11 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public NotificationManager getManager() {
-        if (mManager == null) {
-            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        return mManager;
+        return manager;
     }
 
     public NotificationCompat.Builder getNotification() {
@@ -64,7 +64,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setOngoing(false)
                     .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-            Intent notificationIntent = new Intent(this, testActivity.class);
+            Intent notificationIntent = new Intent(this, MainActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             builder.setContentIntent(contentIntent);

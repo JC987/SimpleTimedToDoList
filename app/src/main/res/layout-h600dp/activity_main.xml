@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:id="@+id/constraint"
     android:background="#FFFFFF"
     tools:context="com.example.jc.timedtodolist.MainActivity">
@@ -20,7 +13,7 @@
         android:id="@+id/textTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/default_text_time"
+        android:text="@string/default_timer_text"
         android:textSize="48sp"
 
         android:layout_marginTop="8dp"
@@ -64,21 +57,21 @@
     </com.example.jc.timedtodolist.MaxHeightScrollView>
 
 
-    <ImageButton
+    <Button
         android:id="@+id/btnTaskAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:textSize="16sp"
-        android:background="@drawable/circle"
-        android:text="@string/btn_text_add"
+        android:background="#FFFFFF"
+        android:text="h600"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias=".5"
         app:layout_constraintLeft_toRightOf="@id/btnTaskReset"
         app:layout_constraintRight_toLeftOf="@id/btnTaskConfirm"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1" />
+
+        app:layout_constraintTop_toTopOf="@+id/scrollView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnTaskConfirm"
@@ -126,4 +119,3 @@
         app:layout_constraintHorizontal_bias="0.301"
         app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>
-</ScrollView>

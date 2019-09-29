@@ -50,7 +50,6 @@ public class MaxHeightScrollView extends ScrollView {
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView);
-            //200 is a defualt value
            // maxHeight = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_maxHeight, defaultHeight);
            // scale = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_scale,1);
             scale = styledAttrs.getFloat(R.styleable.MaxHeightScrollView_scale,0.5f);
@@ -71,7 +70,7 @@ public class MaxHeightScrollView extends ScrollView {
             windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
         }
         catch(NullPointerException e){
-            Log.d("ViewGlobal", "OnViewGlobalLayoutListener: null");
+            Log.d("ViewGlobal", " null");
         }
        // deviceWidth= displayMetrics.widthPixels;
         deviceHeight = displayMetrics.heightPixels;

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="MyScrollView">
-        <attr name="maxHeight2" format="dimension" />
-    </declare-styleable>
+
     <declare-styleable name="MaxHeightScrollView">
         <attr name="maxHeight" format="dimension" />
         <attr name = "scale" format = "float"/>
+    </declare-styleable>
+
+    <declare-styleable name="NumberPickerWithMinMax">
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer"/>
+        <attr name="defaultValue" format="integer" />
     </declare-styleable>
 </resources>

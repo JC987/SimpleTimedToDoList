@@ -1,6 +1,5 @@
 package com.example.jc.timedtodolist;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -15,31 +14,33 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.jc.timedtodolist.MainActivity.TAG;
 
-public class ToDoList {
+class ToDoList {
     Context context;
     private static TableLayout tableLayout;
     private static List<Task> listOfTasks = new ArrayList<Task>();
-    private final int MAX_LIST_SIZE = 20;
-    SharedPreferences sharedPreferences, settings;
-    public ToDoList(Context context){
+    private int maxListSize;
+    private SharedPreferences settings;
+    ToDoList(Context context){
         this.context = context;
+        //TODO: Add a setting to change max list size
         settings = context.getSharedPreferences("Settings",MODE_PRIVATE);
+        maxListSize = Integer.parseInt(settings.getString("maxNumberOfTask","20"));
     }
 
-    protected void addTask(Task newTask){
-        if(listOfTasks.size()<MAX_LIST_SIZE) {
+    void addTask(Task newTask){
+        if(listOfTasks.size()<maxListSize) {
             tableLayout.addView(newTask.getTask());
             listOfTasks.add(newTask);
         }
         else
-            Toast.makeText(context,"Can not have more than " + MAX_LIST_SIZE + " tasks", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Can not have more than " + maxListSize + " tasks", Toast.LENGTH_LONG).show();
     }
 
-    protected static List<Task> getListOfTasks() {
+    static List<Task> getListOfTasks() {
         return listOfTasks;
     }
 
-    protected void confirmList(){
+    void confirmList(){
         Iterator iterator = listOfTasks.iterator();
         Task currentTask;
         while(iterator.hasNext()){
@@ -55,7 +56,7 @@ public class ToDoList {
         }
         redoNumbering();
     }
-    protected static void redoNumbering(){
+    static void redoNumbering(){
         Iterator iterator = listOfTasks.iterator();
         int num = 1;
         String tmp;
@@ -80,18 +81,13 @@ public class ToDoList {
         Task.setTotalNumberOfTask(Task.getTotalNumberOfTask()-1);
     }
 
-    public int adjustTaskCounter(Task currentTask, int ct){
-        String s = ct+ " )";
-        currentTask.getTaskNum().setText(s);
-        Task.setTotalNumberOfTask(ct++);
-        return ct;
-    }
-    protected void resetList(){
+
+    void resetList(){
         tableLayout.removeAllViews();
         Task.setTotalNumberOfTask(0);
         listOfTasks.clear();
     }
-    protected boolean isToDoListEmpty(){
+    boolean isToDoListEmpty(){
         Log.d(TAG, "isToDoListEmpty: size of list" + listOfTasks.size());
         return listOfTasks.isEmpty();
     }

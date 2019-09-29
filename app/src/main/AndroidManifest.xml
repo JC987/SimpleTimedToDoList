@@ -25,10 +25,6 @@
 
         </activity>
 
-        <activity android:name=".testActivity"
-            android:launchMode="singleTask">
-
-        </activity>
 
         <receiver android:name=".MainActivity$switchButtonListener" />
 

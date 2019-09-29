@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:context="com.example.jc.timedtodolist.MainActivity">
 
 
@@ -27,7 +27,7 @@
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:scale="0.35"
+            app:scale="0.4"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintHorizontal_bias="1.0"
@@ -61,7 +61,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/btn_text_add"
+            android:text="h300"
 
             android:textSize="18sp"
             android:textAlignment="center"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/btn_text_reset"
+            android:text="reg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnTaskAdd"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -103,6 +103,7 @@
             app:layout_constraintTop_toBottomOf="@id/scrollView"
             app:layout_constraintVertical_bias="1.0"
             app:layout_constraintHorizontal_bias=".1"/>
+
 
         <Chronometer
             android:id="@+id/chronometer"
@@ -117,4 +118,4 @@
             app:layout_constraintHorizontal_bias="0.301"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

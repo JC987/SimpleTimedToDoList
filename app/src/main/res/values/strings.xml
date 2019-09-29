@@ -4,9 +4,8 @@
     <string name="app_name">Simple Timed To Do List</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings realted to Main Activity -->
-    <string name="default_text_time">00:00:00</string>
-
+    <!-- Strings related to Main Activity -->
+    <string name="default_timer_text">00:00:00</string>
     <string name="disabled_timer_text">--:--:--</string>
     <string name="btn_text_add"> + </string>
     <string name="btn_text_confirm">confirm!</string>
@@ -25,10 +24,20 @@
     <string name = "setting_edit_task">Edit tasks on list after confirmed</string>
     <string name = "setting_no_timer">Disable the timer</string>
     <string name = "setting_add_time">Add time to timer after list confirmed</string>
+    <string name = "setting_change_task_max">Change the max number of tasks</string>
     <string name = "setting_btn_restore">Restore Default</string>
     <string name = "setting_btn_save">Save Settings</string>
 
 
+    <string-array name="items_for_max_tasks_spinner">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
+
+    <!-- these examples are not necessary -->
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 

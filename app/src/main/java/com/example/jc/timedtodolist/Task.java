@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class Task {
+class Task {
     private TableRow task;
     private TextView taskNum;
     private EditText taskDesc;
@@ -28,32 +29,29 @@ public class Task {
     private TableRow.LayoutParams textViewParams= new TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT,0.5f);
 
 
-    private SharedPreferences settings;
-
     private static int totalNumberOfTask = 0;
-    public Task(){
+     Task(){
         task = null;
         taskNum = null;
         taskDesc = null;
         taskCheckBox = null;
     }
-    protected Task(Context context){
+     Task(Context context){
         this.context = context;
-        settings = context.getSharedPreferences("Settings2",MODE_PRIVATE);
         task = new TableRow(context);
         taskNum = new TextView(context);
         taskDesc = new EditText(context);
         taskCheckBox = new CheckBox(context);
     }
 
-    protected void addNewTask(){
-        //if(settings.getBoolean())
+    void addNewTask(){
         totalNumberOfTask++;
         assignTaskNumber(totalNumberOfTask);
         assignTaskDescription("");
         assignTaskCheckBox(false);
 
         task.setPadding(4,8,4,32);
+        taskNum.setTextColor(Color.BLACK);
 
         task.addView(taskNum);
         task.addView(taskDesc);
@@ -68,7 +66,7 @@ public class Task {
         });
 
     }
-    public void assignDefaultTaskValues(){
+     void assignDefaultTaskValues(){
         totalNumberOfTask++;
         String s = totalNumberOfTask + " )";
         taskNum.setText(s);
@@ -102,68 +100,64 @@ public class Task {
                 .create();
         alert.show();
     }
-    protected void assignTaskNumber(int currentTaskNumber){
+    private void assignTaskNumber(int currentTaskNumber){
         String s = currentTaskNumber + " )";
         taskNum.setText(s);
         taskNum.setLayoutParams(textViewParams);
         taskNum.setTextSize(18);
         taskNum.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
-    protected void assignTaskDescription(String description){
+    private void assignTaskDescription(String description){
         taskDesc.setText(description);
         taskDesc.setHint("Leave blank if not needed!");
         taskDesc.requestFocus();
         taskDesc.setTextSize(18);
         taskDesc.setLayoutParams(editTextParams);
     }
-    protected void assignTaskCheckBox(boolean isChecked){
+    private void assignTaskCheckBox(boolean isChecked){
         taskCheckBox.setChecked(isChecked);
         taskCheckBox.setEnabled(false);
         taskCheckBox.setLayoutParams(checkBoxParams);
     }
-    public void setTaskVisibility(){
-        task.setVisibility(View.GONE);
-        totalNumberOfTask--;
-    }
 
 
 
-    public TextView getTaskNum() {
+    TextView getTaskNum() {
         return taskNum;
     }
 
-    public void setTaskNum(TextView taskNum) {
+    void setTaskNum(TextView taskNum) {
         this.taskNum = taskNum;
     }
 
-    public EditText getTaskDesc() {
+    EditText getTaskDesc() {
         return taskDesc;
     }
 
-    public void setTaskDesc(EditText taskDesc) {
+    void setTaskDesc(EditText taskDesc) {
         this.taskDesc = taskDesc;
     }
 
-    public CheckBox getTaskCheckBox() {
+    CheckBox getTaskCheckBox() {
         return taskCheckBox;
     }
 
-    public void setTaskCheckBox(CheckBox taskCheckBox) {
+    void setTaskCheckBox(CheckBox taskCheckBox) {
         this.taskCheckBox = taskCheckBox;
     }
-    public TableRow getTask() {
+    TableRow getTask() {
         return task;
     }
 
-    public void setTask(TableRow task) {
+    void setTask(TableRow task) {
         this.task = task;
     }
 
-    public static int getTotalNumberOfTask() {
+    static int getTotalNumberOfTask() {
         return totalNumberOfTask;
     }
 
-    public static void setTotalNumberOfTask(int totalNumberOfTask) {
+    static void setTotalNumberOfTask(int totalNumberOfTask) {
         Task.totalNumberOfTask = totalNumberOfTask;
     }
 }
