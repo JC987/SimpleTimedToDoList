@@ -35,9 +35,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     CountDownTimer countDownTimer = null;
     Chronometer chronometer;
     ToDoList toDoList;
+    DatabaseHelper databaseHelper;
 
     private static final String CHANNEL_ONE_ID = "com.example.jc.simpletimedtodolist.channel_one_id";
     private static final String CHANNEL_ONE_NAME = "com.example.jc.simpletimedtodolist.channel_one_name";
@@ -65,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("save and load", MODE_PRIVATE);
         settings = getSharedPreferences("Settings", MODE_PRIVATE);
         setTheme(sharedPreferences.getInt("theme", R.style.AppTheme));
-
+        databaseHelper = new DatabaseHelper(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -123,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         btnConfirmToDoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*ArrayList<String> l = new ArrayList<>();
+                l.add("my,task,added");
+                l.add("");
+                l.add(",,,,asdf,,,,");
+                byte[] by =  makebyte(l);
+                read(by);*/
+
                 if (!toDoList.isToDoListEmpty() &&
                         !(tvTimer.getText().toString().equals(getString(R.string.default_timer_text)) ||
                                 tvTimer.getText().toString().equals(getString(R.string.disabled_timer_text)))) {
@@ -375,6 +392,14 @@ public class MainActivity extends AppCompatActivity {
         btnConfirmToDoList.setEnabled(true);
         btnResetToDoList.setText(R.string.btn_text_reset);
         toDoList.resetList();
+
+        byte[] by = makebyte(toDoList.getCompleted());
+        byte[] by2 = makebyte(toDoList.getFailed());
+        //read(by);
+        Date currentTime = Calendar.getInstance().getTime();
+
+        databaseHelper.addData(currentTime.toString(),by,by2);
+
         cancelAlarmManager();
         Task.setTotalNumberOfTask(0);
     }
@@ -499,6 +524,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuSetting:
                 Intent intentSettings = new Intent(this, SettingsActivity.class);
                 this.startActivity(intentSettings);
+                return true;
+            case R.id.menuPrevLists:
+                Intent intent = new Intent(this, PreviousLists.class);
+                this.startActivity(intent);
                 return true;
             case R.id.menuTheme:
                 createThemeDialog();
@@ -753,6 +782,29 @@ public class MainActivity extends AppCompatActivity {
             if (!tvTimer.getText().toString().equals(getString(R.string.disabled_timer_text)))
                 countDown((convertTimeToMilliseconds(time) - difference));
         }
+    }
+
+
+    public byte[] makebyte(ArrayList<String> modeldata) {
+        try {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(modeldata);
+            byte[] employeeAsBytes = baos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(employeeAsBytes);
+            Log.d(TAG, "makebyte: bais is " + bais);
+            for(int i = 0; i < employeeAsBytes.length; i++){
+
+                Log.d(TAG, "makebyte: empl is " + employeeAsBytes[i]);
+            }
+            Log.d(TAG, "makebyte: empl is " + employeeAsBytes);
+            return employeeAsBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

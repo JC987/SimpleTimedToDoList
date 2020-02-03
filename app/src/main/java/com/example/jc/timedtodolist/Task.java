@@ -44,6 +44,7 @@ class Task {
         taskCheckBox = new CheckBox(context);
     }
 
+
     void addNewTask(){
         totalNumberOfTask++;
         assignTaskNumber(totalNumberOfTask);

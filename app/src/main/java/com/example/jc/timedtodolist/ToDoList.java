@@ -19,6 +19,9 @@ class ToDoList {
     private static TableLayout tableLayout;
     private static List<Task> listOfTasks = new ArrayList<Task>();
     private int maxListSize;
+    private ArrayList<String> completed = new ArrayList<>();
+
+    private ArrayList<String> failed =  new ArrayList<>();
     private SharedPreferences settings;
     ToDoList(Context context){
         this.context = context;
@@ -83,9 +86,36 @@ class ToDoList {
 
 
     void resetList(){
+        saveList();
         tableLayout.removeAllViews();
         Task.setTotalNumberOfTask(0);
         listOfTasks.clear();
+    }
+
+    public ArrayList<String> getCompleted() {
+        return completed;
+    }
+
+
+    public ArrayList<String> getFailed() {
+        return failed;
+    }
+
+    private void saveList(){
+        Iterator iterator = listOfTasks.iterator();
+        Task currentTask;
+        while(iterator.hasNext()){
+            currentTask = (Task) iterator.next();
+            if(currentTask.getTaskCheckBox().isChecked()) {
+                //add to completed
+                completed.add(currentTask.getTaskDesc().getText().toString());
+            }
+            else {
+                //add to failed
+                failed.add(currentTask.getTaskDesc().getText().toString());
+            }
+
+        }
     }
     boolean isToDoListEmpty(){
         Log.d(TAG, "isToDoListEmpty: size of list" + listOfTasks.size());

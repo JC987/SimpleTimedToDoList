@@ -5,4 +5,6 @@
         app:showAsAction="never"/>
     <item android:id="@+id/menuTheme" android:title="@string/theme"
         app:showAsAction="never"/>
+    <item android:id="@+id/menuPrevLists" android:title="@string/prev_lists"
+        app:showAsAction="never"/>
 </menu>
