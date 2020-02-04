@@ -1,5 +1,7 @@
 package com.example.jc.timedtodolist;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,10 +24,15 @@ public class PreviousLists extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     ListView listView;
     Cursor data;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences = getSharedPreferences("save and load", MODE_PRIVATE);
+        setTheme(sharedPreferences.getInt("theme", R.style.AppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_previous_lists);
+
         listView = findViewById(R.id.listView);
         databaseHelper = new DatabaseHelper(this);
 
@@ -37,12 +45,14 @@ public class PreviousLists extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d(TAG, "onItemSelected: pressed pos " + i);
                 data.moveToPosition(i);
-                byte[] by = data.getBlob(2);
-                ArrayList<String> completed = readByteArr(by);
-                ArrayList<String> failed = readByteArr(by);
+                byte[] completed = data.getBlob(2);
+                byte[] failed = data.getBlob(3);
                 //goto detailed view...
-                Log.d(TAG, "onItemSelected: data" + data.getPosition() + "  "
-                +  completed +"  " + data.getCount());
+                Intent intent = new Intent(getApplicationContext(), DetailedPreviousList.class);
+                Log.d(TAG, "onItemSelected: data" + data.getPosition());
+                intent.putExtra("completed", completed);
+                intent.putExtra("failed", failed);
+                startActivity(intent);
             }
         });
     }
@@ -62,27 +72,6 @@ public class PreviousLists extends AppCompatActivity {
     }
 
 
-    public ArrayList<String> readByteArr(byte[] data) {
-        try {
-
-
-            ByteArrayInputStream baip = new ByteArrayInputStream(data);
-            ObjectInputStream ois = new ObjectInputStream(baip);
-            ArrayList dataobj = (ArrayList) ois.readObject();
-            Log.d(TAG, "read: dO " + dataobj);
-            for(int i = 0; i < dataobj.size(); i++){
-
-                Log.d(TAG, "read: daO is " + dataobj.get(i));
-            }
-            return dataobj ;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
 }

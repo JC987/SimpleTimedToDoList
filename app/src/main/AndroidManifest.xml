@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PreviousLists"></activity>
+        <activity android:name=".DetailedPreviousList"></activity>
+        <activity android:name=".PreviousLists" />
 
         <receiver
             android:name=".MyReceiver"
