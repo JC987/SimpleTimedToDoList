@@ -8,7 +8,6 @@
     android:orientation="vertical"
     >
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,4 +62,41 @@
         app:layout_constraintVertical_bias="0" />
 
 
+    <!--
+
+
+    <com.example.jc.timedtodolist.MaxHeightScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scale=".65"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias=".1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/detailLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/detailTableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+            </TableLayout>
+        </LinearLayout>
+    </com.example.jc.timedtodolist.MaxHeightScrollView>
+
+
+
+    -->
 </android.support.constraint.ConstraintLayout>

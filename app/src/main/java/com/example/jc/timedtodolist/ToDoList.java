@@ -90,6 +90,7 @@ class ToDoList {
         tableLayout.removeAllViews();
         Task.setTotalNumberOfTask(0);
         listOfTasks.clear();
+
     }
 
     public ArrayList<String> getCompleted() {

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TableLayout;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class DetailedPreviousList extends AppCompatActivity {
     ListView completedListView, failedListView;
     ArrayList<String> completed, failed;
     SharedPreferences sharedPreferences;
+    TableLayout tableLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -31,7 +33,8 @@ public class DetailedPreviousList extends AppCompatActivity {
 
         completedListView = findViewById(R.id.completedListView);
         failedListView = findViewById(R.id.failedListView);
-
+        Log.d(TAG, "onCreate: " + c);
+        Log.d(TAG, "onCreate: " + f);
         completed = readByteArr(c);
         failed = readByteArr(f);
 

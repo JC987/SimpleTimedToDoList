@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         btnResetToDoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toDoList.resetList();
+                //toDoList.resetList();
                 resetViews();
                 clearAllNotifications();
             }
@@ -391,13 +391,17 @@ public class MainActivity extends AppCompatActivity {
         btnAddTask.setEnabled(true);
         btnConfirmToDoList.setEnabled(true);
         btnResetToDoList.setText(R.string.btn_text_reset);
+
         toDoList.resetList();
+
 
         byte[] by = makebyte(toDoList.getCompleted());
         byte[] by2 = makebyte(toDoList.getFailed());
+
+
         //read(by);
         Date currentTime = Calendar.getInstance().getTime();
-
+        Log.d(TAG, "resetViews: BY is " + by + "  " + by2);
         databaseHelper.addData(currentTime.toString(),by,by2);
 
         cancelAlarmManager();
@@ -799,6 +803,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "makebyte: empl is " + employeeAsBytes[i]);
             }
             Log.d(TAG, "makebyte: empl is " + employeeAsBytes);
+            modeldata.clear();
             return employeeAsBytes;
         } catch (IOException e) {
             e.printStackTrace();
