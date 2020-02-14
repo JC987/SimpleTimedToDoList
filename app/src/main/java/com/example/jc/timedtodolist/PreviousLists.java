@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -57,9 +59,32 @@ public class PreviousLists extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_previous_lists, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuDeleteDatabase:
+                databaseHelper.deleteDB();
+                emptyListView();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void emptyListView(){
+        ArrayList<String> list = new ArrayList<>();
+        data.moveToFirst();
+        ListAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        listView.setAdapter(adapter);
+    }
+
     private void populateListView(){
-
-
         ArrayList<String> list = new ArrayList<>();
 
         while(data.moveToNext()){

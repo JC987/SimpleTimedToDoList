@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import static com.example.jc.timedtodolist.PreviousLists.TAG;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "saved_lists";
@@ -13,12 +16,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL3 = "failed";
     public DatabaseHelper (Context context){
         super(context, TABLE_NAME, null, 1);
+        Log.d(TAG, "DatabaseHelper: NEW DB HELPER");
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String createTable = "CREATE TABLE "+ TABLE_NAME + "( ID INTEGER PRIMARY KEY " +
                 "AUTOINCREMENT, " + COL1 + " TEXT, " + COL2 + " BLOB, " + COL3 + " BLOB)";
-
+        Log.d(TAG, "onCreate: table created");
         sqLiteDatabase.execSQL(createTable);
     }
 
@@ -29,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public boolean addData(String title, byte[] completed, byte[] failed){
         SQLiteDatabase db = this.getWritableDatabase();
+       // db.rawQuery("CREATE TABLE " + TABLE_NAME, null);
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, title);
         contentValues.put(COL2, completed);
@@ -44,6 +49,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getData(){
 
         SQLiteDatabase db = this.getWritableDatabase();
+
+
+        //db.execSQL("CREATE TABLE IF NOT EXISTS "+ TABLE_NAME);
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
 
     }
@@ -51,10 +59,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Returns all data
      * @return
      */
-    public Cursor getData2(){
+    public void deleteDB(){
 
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        db.execSQL("DELETE FROM  " + TABLE_NAME);
 
     }
 
