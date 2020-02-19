@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         //db.execSQL("CREATE TABLE IF NOT EXISTS "+ TABLE_NAME);
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY "+ COL1 + " DESC", null);
 
     }
     /**
@@ -64,6 +64,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM  " + TABLE_NAME);
 
+    }
+    public void deleteItem(String title){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM  " + TABLE_NAME + " WHERE " + COL1 + " = '" + title +"'");
     }
 
 }

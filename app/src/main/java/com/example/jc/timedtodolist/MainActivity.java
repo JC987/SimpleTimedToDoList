@@ -395,9 +395,11 @@ public class MainActivity extends AppCompatActivity {
         toDoList.resetList();
 
 
+        //byte[] by = makebyte(toDoList.getCompleted());
+        //byte[] by2 = makebyte(toDoList.getFailed());
+       // byte[] by3 = makebyte(ToDoList.getListOfTasks());
         byte[] by = makebyte(toDoList.getCompleted());
         byte[] by2 = makebyte(toDoList.getFailed());
-
 
         //read(by);
         Date currentTime = Calendar.getInstance().getTime();
@@ -790,6 +792,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     public byte[] makebyte(ArrayList<String> modeldata) {
+        try {
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(modeldata);
+            byte[] employeeAsBytes = baos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(employeeAsBytes);
+            Log.d(TAG, "makebyte: bais is " + bais);
+            for(int i = 0; i < employeeAsBytes.length; i++){
+
+                Log.d(TAG, "makebyte: empl is " + employeeAsBytes[i]);
+            }
+            Log.d(TAG, "makebyte: empl is " + employeeAsBytes);
+            modeldata.clear();
+            return employeeAsBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public byte[] makebyte2(ArrayList<Integer> modeldata) {
         try {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

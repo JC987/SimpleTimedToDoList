@@ -30,9 +30,9 @@ public class DetailedPreviousList extends AppCompatActivity {
 
         byte[] c = getIntent().getByteArrayExtra("completed");
         byte[] f = getIntent().getByteArrayExtra("failed");
-
-        completedListView = findViewById(R.id.completedListView);
-        failedListView = findViewById(R.id.failedListView);
+        Log.d(TAG, "onCreate: " + c + "   " + f);
+        completedListView = findViewById(R.id.listViewCompleted);
+        failedListView = findViewById(R.id.listViewFailed);
         Log.d(TAG, "onCreate: " + c);
         Log.d(TAG, "onCreate: " + f);
         completed = readByteArr(c);
@@ -46,15 +46,42 @@ public class DetailedPreviousList extends AppCompatActivity {
     private void populateListViews(){
         Log.d(TAG, "populateListViews: fail " + failed);
         Log.d(TAG, "populateListViews: comp " + completed);
-        ListAdapter completedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, completed);
+        ListAdapter completedAdapter = new ArrayAdapter<>(this, R.layout.previous_list_item, completed);
         completedListView.setAdapter(completedAdapter);
 
-        ListAdapter failedAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, failed);
+        ListAdapter failedAdapter = new ArrayAdapter<>(this, R.layout.previous_list_item, failed);
         failedListView.setAdapter(failedAdapter);
 
     }
 
 
+/*
+    public ArrayList<Task> readByteArr(byte[] data) {
+        try {
+
+            Log.d(TAG, "readByteArr: " + data);
+            ByteArrayInputStream baip = new ByteArrayInputStream(data);
+
+            Log.d(TAG, "readByteArr: " + baip);
+            ObjectInputStream ois = new ObjectInputStream(baip);
+
+            Log.d(TAG, "readByteArr: " + (ois.readObject()));
+            ArrayList<Task> dataobj = ((ArrayList) ois.readObject());
+            Log.d(TAG, "read: dO " + dataobj);
+            for(int i = 0; i < dataobj.size(); i++){
+
+                Log.d(TAG, "read: daO is " + dataobj.get(i).getTaskDesc().toString());
+            }
+            return dataobj ;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+*/
 
     public ArrayList<String> readByteArr(byte[] data) {
         try {

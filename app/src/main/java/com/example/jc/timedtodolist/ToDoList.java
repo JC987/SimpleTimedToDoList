@@ -17,7 +17,7 @@ import static com.example.jc.timedtodolist.MainActivity.TAG;
 class ToDoList {
     Context context;
     private static TableLayout tableLayout;
-    private static List<Task> listOfTasks = new ArrayList<Task>();
+    private static ArrayList<Task> listOfTasks = new ArrayList<Task>();
     private int maxListSize;
     private ArrayList<String> completed = new ArrayList<>();
 
@@ -39,8 +39,25 @@ class ToDoList {
             Toast.makeText(context,"Can not have more than " + maxListSize + " tasks", Toast.LENGTH_LONG).show();
     }
 
-    static List<Task> getListOfTasks() {
+    static ArrayList<Task> getListOfTasks() {
         return listOfTasks;
+    }
+    ArrayList<String> getListOfTaskDescriptions(){
+        ArrayList<String> descriptions = new ArrayList<>();
+        for(Task t : listOfTasks){
+            descriptions.add(t.getTaskDesc().toString());
+        }
+        return descriptions;
+    }
+    ArrayList<Integer> getListOfTasksConfirmation(){
+        ArrayList<Integer> confirmation = new ArrayList<>();
+        for(Task t : listOfTasks){
+            if(t.getTaskCheckBox().isChecked())
+                confirmation.add(1);
+            else
+                confirmation.add(0);
+        }
+        return confirmation;
     }
 
     void confirmList(){
@@ -101,6 +118,7 @@ class ToDoList {
     public ArrayList<String> getFailed() {
         return failed;
     }
+
 
     private void saveList(){
         Iterator iterator = listOfTasks.iterator();
