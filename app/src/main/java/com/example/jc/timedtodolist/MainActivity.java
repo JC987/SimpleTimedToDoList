@@ -199,6 +199,32 @@ public class MainActivity extends AppCompatActivity {
         return task;
     }
 
+    private void createFinishedDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("Finished?")
+                .setMessage("Do you want to save this ToDo list?")
+                .setNegativeButton("Don't Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                      ;//  toDoList.getCompleted().clear(); toDoList.getFailed().clear();
+                    }
+                })
+                .setPositiveButton("Yes, Save!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        byte[] completedByteArr = makebyte(toDoList.getCompleted());
+                        byte[] failedByteArr = makebyte(toDoList.getFailed());
+
+                        //read(by);
+                        Date currentTime = Calendar.getInstance().getTime();
+                        //Log.d(TAG, "resetViews: BY is " + completedByteArr + "  " + failedByteArr);
+                        databaseHelper.addData(currentTime.toString(),completedByteArr,failedByteArr);
+                        Toast.makeText(MainActivity.this, "ToDo List Saved!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .create()
+                .show();
+    }
     public void createTimePickerDialog(){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -395,17 +421,7 @@ public class MainActivity extends AppCompatActivity {
         toDoList.resetList();
 
 
-        //byte[] by = makebyte(toDoList.getCompleted());
-        //byte[] by2 = makebyte(toDoList.getFailed());
-       // byte[] by3 = makebyte(ToDoList.getListOfTasks());
-        byte[] by = makebyte(toDoList.getCompleted());
-        byte[] by2 = makebyte(toDoList.getFailed());
-
-        //read(by);
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.d(TAG, "resetViews: BY is " + by + "  " + by2);
-        databaseHelper.addData(currentTime.toString(),by,by2);
-
+        createFinishedDialog();
         cancelAlarmManager();
         Task.setTotalNumberOfTask(0);
     }

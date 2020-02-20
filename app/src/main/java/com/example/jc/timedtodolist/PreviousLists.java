@@ -31,6 +31,7 @@ public class PreviousLists extends AppCompatActivity {
     Cursor data;
     ArrayAdapter adapter;
     SharedPreferences sharedPreferences;
+    boolean isDescending = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPreferences = getSharedPreferences("save and load", MODE_PRIVATE);
@@ -42,7 +43,7 @@ public class PreviousLists extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         databaseHelper = new DatabaseHelper(this);
 
-        data = databaseHelper.getData();
+        //data = databaseHelper.getData(isDescending);
         populateListView();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,9 +93,10 @@ public class PreviousLists extends AppCompatActivity {
                             data.moveToPosition(pos);
                             String title = data.getString(1);
                             databaseHelper.deleteItem(title);
-                            adapter.remove(title);
+                            populateListView();
+                           /* adapter.remove(title);
                             adapter.notifyDataSetChanged();
-                            data = databaseHelper.getData();
+                            data = databaseHelper.getData(isDescending);*/
                         }
                         catch(Exception e){
                             Log.d(TAG, "onClick: error removing data");
@@ -118,6 +120,11 @@ public class PreviousLists extends AppCompatActivity {
                 databaseHelper.deleteDB();
                 emptyListView();
                 return true;
+            case R.id.menuReverseList:
+                isDescending = !isDescending;
+                //data = databaseHelper.getData(isDescending);
+                populateListView();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -133,6 +140,7 @@ public class PreviousLists extends AppCompatActivity {
     }
 
     private void populateListView(){
+        data = databaseHelper.getData(isDescending);
         ArrayList<String> list = new ArrayList<>();
         
         while(data.moveToNext()){

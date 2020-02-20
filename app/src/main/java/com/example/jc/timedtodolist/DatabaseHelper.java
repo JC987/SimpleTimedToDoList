@@ -46,14 +46,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Returns all data
      * @return
      */
-    public Cursor getData(){
+    public Cursor getData(boolean desc){
 
         SQLiteDatabase db = this.getWritableDatabase();
 
 
         //db.execSQL("CREATE TABLE IF NOT EXISTS "+ TABLE_NAME);
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY "+ COL1 + " DESC", null);
+        if(desc)
+            return db.rawQuery("SELECT * FROM " + TABLE_NAME + " ORDER BY id" + " DESC", null);
 
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
     /**
      * Returns all data

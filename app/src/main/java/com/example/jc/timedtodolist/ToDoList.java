@@ -74,6 +74,8 @@ class ToDoList {
 
             }
         }
+        completed.clear();
+        failed.clear();
         redoNumbering();
     }
     static void redoNumbering(){
