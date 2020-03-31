@@ -130,12 +130,6 @@ public class MainActivity extends AppCompatActivity {
         btnConfirmToDoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*ArrayList<String> l = new ArrayList<>();
-                l.add("my,task,added");
-                l.add("");
-                l.add(",,,,asdf,,,,");
-                byte[] by =  makebyte(l);
-                read(by);*/
 
                 if (!toDoList.isToDoListEmpty() &&
                         !(tvTimer.getText().toString().equals(getString(R.string.default_timer_text)) ||
@@ -153,9 +147,7 @@ public class MainActivity extends AppCompatActivity {
         btnResetToDoList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //toDoList.resetList();
-                resetViews();
-                clearAllNotifications();
+                createFinishedDialog();
             }
         });
     }
@@ -166,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         if (!settings.getBoolean("disableTimer", false)) {
             time = convertTimeToMilliseconds(tvTimer.getText().toString());
             countDown(time);
+
         }
         setViewsOnceActive();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -200,15 +193,25 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle("Finished?")
                 .setMessage("Do you want to save this ToDo list?")
+                .setNeutralButton("Cancel",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ;
+                    }
+                })
+
                 .setNegativeButton("Don't Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                      ;//  toDoList.getCompleted().clear(); toDoList.getFailed().clear();
+                        resetViews();
+                        clearAllNotifications();
                     }
                 })
                 .setPositiveButton("Yes, Save!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        resetViews();
+                        clearAllNotifications();
                         byte[] completedByteArr = makebyte(toDoList.getCompleted());
                         byte[] failedByteArr = makebyte(toDoList.getFailed());
 
@@ -408,16 +411,16 @@ public class MainActivity extends AppCompatActivity {
             tvTimer.setLongClickable(true);
         }
         isToDoListActive = false;
-        if (countDownTimer != null)
+        if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
         btnAddTask.setEnabled(true);
         btnConfirmToDoList.setEnabled(true);
         btnResetToDoList.setText(R.string.btn_text_reset);
-
         toDoList.resetList();
 
 
-        createFinishedDialog();
+
         cancelAlarmManager();
         Task.setTotalNumberOfTask(0);
     }
@@ -748,6 +751,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadState() {
         isToDoListActive = sharedPreferences.getBoolean("isActive", false);
+        if(countDownTimer != null)
+            countDownTimer.cancel();
         if(isToDoListActive)
             btnAddTask.setEnabled(settings.getBoolean("addTaskSetting", true));
         if (toDoList.isToDoListEmpty()) {
