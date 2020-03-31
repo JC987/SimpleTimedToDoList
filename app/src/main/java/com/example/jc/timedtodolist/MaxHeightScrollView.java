@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ScrollView;
 
@@ -70,7 +69,7 @@ public class MaxHeightScrollView extends ScrollView {
             windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
         }
         catch(NullPointerException e){
-            Log.d("ViewGlobal", " null");
+            ;
         }
        // deviceWidth= displayMetrics.widthPixels;
         deviceHeight = displayMetrics.heightPixels;

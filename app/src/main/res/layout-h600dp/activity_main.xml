@@ -64,7 +64,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="#FFFFFF"
-        android:text="h600"
+        android:text=" + "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias=".5"
         app:layout_constraintLeft_toRightOf="@id/btnTaskReset"

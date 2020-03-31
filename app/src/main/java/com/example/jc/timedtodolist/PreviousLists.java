@@ -7,22 +7,13 @@ import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PreviousLists extends AppCompatActivity {
     public static final String TAG = "PreviousLists";
@@ -50,14 +41,11 @@ public class PreviousLists extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, "onItemSelected: pressed pos " + i);
                 data.moveToPosition(i);
                 byte[] completed = data.getBlob(2);
                 byte[] failed = data.getBlob(3);
-                Log.d(TAG, "onItemSelected: data" + completed + "   " + failed);
                 //goto detailed view...
                 Intent intent = new Intent(getApplicationContext(), DetailedPreviousList.class);
-                Log.d(TAG, "onItemSelected: data" + data.getPosition());
                 intent.putExtra("completed", completed);
                 intent.putExtra("failed", failed);
                 startActivity(intent);
@@ -67,7 +55,6 @@ public class PreviousLists extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(PreviousLists.this, "long pressed " + i, Toast.LENGTH_SHORT).show();
                 createDeleteItemDialog(i);
                 return true;
             }
@@ -94,12 +81,9 @@ public class PreviousLists extends AppCompatActivity {
                             String title = data.getString(1);
                             databaseHelper.deleteItem(title);
                             populateListView();
-                           /* adapter.remove(title);
-                            adapter.notifyDataSetChanged();
-                            data = databaseHelper.getData(isDescending);*/
                         }
                         catch(Exception e){
-                            Log.d(TAG, "onClick: error removing data");
+                            ;
                         }
                     }
                 })
@@ -145,7 +129,6 @@ public class PreviousLists extends AppCompatActivity {
         
         while(data.moveToNext()){
             list.add(data.getString(1));
-            Log.d(TAG, "populateListView: data is "+ data.getString(1));
         }
         data.moveToFirst();
         adapter = new ArrayAdapter<>(this, R.layout.previous_list_item, list);

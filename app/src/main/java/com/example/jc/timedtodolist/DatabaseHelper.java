@@ -5,24 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import static com.example.jc.timedtodolist.PreviousLists.TAG;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "saved_lists";
     public static final String COL1 = "title";
     public static final String COL2 = "completed";
     public static final String COL3 = "failed";
+
     public DatabaseHelper (Context context){
         super(context, TABLE_NAME, null, 1);
-        Log.d(TAG, "DatabaseHelper: NEW DB HELPER");
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String createTable = "CREATE TABLE "+ TABLE_NAME + "( ID INTEGER PRIMARY KEY " +
                 "AUTOINCREMENT, " + COL1 + " TEXT, " + COL2 + " BLOB, " + COL3 + " BLOB)";
-        Log.d(TAG, "onCreate: table created");
         sqLiteDatabase.execSQL(createTable);
     }
 

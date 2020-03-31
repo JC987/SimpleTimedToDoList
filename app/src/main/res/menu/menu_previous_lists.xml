@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menuDeleteDatabase" android:title="Delete DB"
+    <item android:id="@+id/menuDeleteDatabase" android:title="Delete All Lists"
         app:showAsAction="never"/>
     <item android:id="@+id/menuReverseList" android:title="Reverse Order"
         app:showAsAction="never"/>

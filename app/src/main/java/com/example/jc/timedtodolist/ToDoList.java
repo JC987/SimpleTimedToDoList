@@ -2,17 +2,13 @@ package com.example.jc.timedtodolist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.view.View;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.jc.timedtodolist.MainActivity.TAG;
 
 class ToDoList {
     Context context;
@@ -25,7 +21,6 @@ class ToDoList {
     private SharedPreferences settings;
     ToDoList(Context context){
         this.context = context;
-        //TODO: Add a setting to change max list size
         settings = context.getSharedPreferences("Settings",MODE_PRIVATE);
         maxListSize = Integer.parseInt(settings.getString("maxNumberOfTask","20"));
     }
@@ -139,7 +134,6 @@ class ToDoList {
         }
     }
     boolean isToDoListEmpty(){
-        Log.d(TAG, "isToDoListEmpty: size of list" + listOfTasks.size());
         return listOfTasks.isEmpty();
     }
 }

@@ -20,7 +20,7 @@ import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +38,6 @@ import android.widget.Toast;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -46,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -124,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Log.d(TAG, "onClick: addTask Pressed");
                     createNewTask();
 
             }
@@ -217,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
 
                         //read(by);
                         Date currentTime = Calendar.getInstance().getTime();
-                        //Log.d(TAG, "resetViews: BY is " + completedByteArr + "  " + failedByteArr);
                         databaseHelper.addData(currentTime.toString(),completedByteArr,failedByteArr);
                         Toast.makeText(MainActivity.this, "ToDo List Saved!", Toast.LENGTH_SHORT).show();
                     }
@@ -445,11 +441,9 @@ public class MainActivity extends AppCompatActivity {
         if (alarmManager != null) {
             //setExact requires api 19 or up.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Log.i(TAG, "onClick: api version greater than or equal to 19");
                 alarmManager.setExact(AlarmManager.ELAPSED_REALTIME,
                         SystemClock.elapsedRealtime() + time, pendingIntent);
             } else {
-                Log.i(TAG, "onClick: api version below 19");
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME,
                         SystemClock.elapsedRealtime() + time, pendingIntent);
             }
@@ -757,7 +751,6 @@ public class MainActivity extends AppCompatActivity {
         if(isToDoListActive)
             btnAddTask.setEnabled(settings.getBoolean("addTaskSetting", true));
         if (toDoList.isToDoListEmpty()) {
-            Log.d(TAG, "loadState: list is empty");
             loadToDoList();
             loadTimer();
             btnConfirmToDoList.setEnabled(sharedPreferences.getBoolean("isConfirmEnabled", true));
@@ -815,12 +808,6 @@ public class MainActivity extends AppCompatActivity {
             oos.writeObject(modeldata);
             byte[] employeeAsBytes = baos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(employeeAsBytes);
-            Log.d(TAG, "makebyte: bais is " + bais);
-            for(int i = 0; i < employeeAsBytes.length; i++){
-
-                Log.d(TAG, "makebyte: empl is " + employeeAsBytes[i]);
-            }
-            Log.d(TAG, "makebyte: empl is " + employeeAsBytes);
             modeldata.clear();
             return employeeAsBytes;
         } catch (IOException e) {
@@ -839,12 +826,6 @@ public class MainActivity extends AppCompatActivity {
             oos.writeObject(modeldata);
             byte[] employeeAsBytes = baos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(employeeAsBytes);
-            Log.d(TAG, "makebyte: bais is " + bais);
-            for(int i = 0; i < employeeAsBytes.length; i++){
-
-                Log.d(TAG, "makebyte: empl is " + employeeAsBytes[i]);
-            }
-            Log.d(TAG, "makebyte: empl is " + employeeAsBytes);
             modeldata.clear();
             return employeeAsBytes;
         } catch (IOException e) {
@@ -861,8 +842,6 @@ public class MainActivity extends AppCompatActivity {
     public static class switchButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: Received");
-
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager != null)
                 manager.cancelAll();
